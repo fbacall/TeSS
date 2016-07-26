@@ -82,7 +82,16 @@ $(document).ready(function () {
         });
 
         if (editable) {
-            $('#workflow-toolbar-add').click(Workflows.setAddNodeState);
+            $('#workflow-toolbar-add').click(function () {
+                $('#node-modal-form-type').val('standard');
+                Workflows.setAddNodeState();
+                return false;
+            });
+            $('#workflow-toolbar-link-workflow').click(function () {
+                $('#node-modal-form-type').val('workflow-link');
+                Workflows.setAddNodeState();
+                return false;
+            });
             $('#workflow-toolbar-cancel').click(Workflows.cancelState);
             $('#workflow-toolbar-edit').click(Workflows.edit);
             $('#workflow-toolbar-link').click(Workflows.setLinkNodeState);
@@ -195,9 +204,14 @@ var Workflows = {
     placeNode: function (position, parentId) {
         $('#node-modal-title').html(parentId ? 'Add child node' : 'Add node');
         $('#node-modal').modal('show');
+        var type = $('#node-modal-form-type').val();
+        $('.node-modal-variable-fields').hide();
+        $('#node-modal-' + type + '-fields').show();
+
         $('#node-modal-form-id').val('');
         $('#node-modal-form-title').val('');
         $('#node-modal-form-description').val('');
+        $('#node-modal-form-workflow').val('');
         $('#node-modal-form-colour').val('#F0721E')[0].jscolor.fromString('#F0721E');
         $('#node-modal-form-parent-id').val(parentId);
         $('#node-modal-form-x').val(position.x);
@@ -212,12 +226,14 @@ var Workflows = {
         var object = {
             group: 'nodes',
             data: {
+                type: $('#node-modal-form-type').val(),
                 name: $('#node-modal-form-title').val(),
                 description: $('#node-modal-form-description').val(),
                 color: $('#node-modal-form-colour').val(),
                 font_color: $('#node-modal-form-colour').css("color"),
                 parent: $('#node-modal-form-parent-id').val(),
-                associatedResources: Workflows.associatedResources.fetch()
+                associatedResources: Workflows.associatedResources.fetch(),
+                workflowPath: $('#node-modal-form-workflow').val()
             },
             position: {
                 x: parseInt($('#node-modal-form-x').val()),
@@ -246,9 +262,15 @@ var Workflows = {
             var position = Workflows.selected.position();
             $('#node-modal-title').html('Edit node');
             $('#node-modal').modal('show');
+            var type = data.type || 'standard';
+            $('#node-modal-form-type').val(type);
+            $('.node-modal-variable-fields').hide();
+            $('#node-modal-' + type + '-fields').show();
+
             $('#node-modal-form-id').val(data.id);
             $('#node-modal-form-title').val(data.name);
             $('#node-modal-form-description').val(data.description);
+            $('#node-modal-form-workflow').val(data.workflowPath);
             $('#node-modal-form-colour').val(data.color)[0].jscolor.fromString(data.color);
             $('#node-modal-form-parent-id').val(data.parent);
             $('#node-modal-form-x').val(position.x);
@@ -256,7 +278,6 @@ var Workflows = {
             if (data.associatedResources) {
                 Workflows.associatedResources.populate(data.associatedResources);
             }
-
         } else if (Workflows.state === 'edge selection') {
             data = Workflows.selected.data();
             $('#edge-modal').modal('show');
@@ -272,6 +293,7 @@ var Workflows = {
             node.data('color', $('#node-modal-form-colour').val());
             node.data('font_color', $('#node-modal-form-colour').css("color"));
             node.data('associatedResources', Workflows.associatedResources.fetch());
+            node.data('workflowPath', $('#node-modal-form-workflow').val());
             node.css('color', node.data('font_color'));
         });
 

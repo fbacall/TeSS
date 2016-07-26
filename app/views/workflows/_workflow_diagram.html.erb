@@ -9,9 +9,16 @@
         <a class="btn btn-default disabled" id="workflow-toolbar-redo">
           <i class="fa fa-repeat"></i> <span>Redo</span>
         </a>
-        <a class="btn btn-default" id="workflow-toolbar-add">
-          <i class="fa fa-plus"></i> Add node
-        </a>
+        <div class="btn-group">
+          <a class="btn btn-default" id="workflow-toolbar-add"><i class="fa fa-plus"></i> Add node</a>
+          <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#" id="workflow-toolbar-link-workflow"><i class="fa fa-cog"></i> Link to another workflow</a></li>
+          </ul>
+        </div>
       </div>
       <div id="workflow-status-bar">
         <strong>Selected:</strong> <span id="workflow-status-selected-node"></span>

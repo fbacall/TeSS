@@ -4,6 +4,10 @@ $(document).ready(function () {
     var editable = cytoscapeElement.data('editable');
 
     if (wfJsonElement.length && cytoscapeElement.length) {
+        var bgSize = 16;
+        var nodePadding = 8;
+        var nodeSize = 150;
+
         var cy = window.cy = cytoscape({
             container: cytoscapeElement[0],
             elements: JSON.parse(wfJsonElement.html()),
@@ -26,14 +30,14 @@ $(document).ready(function () {
                         'background-opacity': 0.8,
                         'text-valign': 'center',
                         'text-halign': 'center',
-                        'width': '150px',
-                        'height': '30px',
+                        'width': nodeSize,
+                        'text-max-width': nodeSize - (nodePadding * 2),
+                        'height': 30,
                         'font-size': '9px',
                         'border-width': '1px',
                         'border-color': '#000',
                         'border-opacity': 0.5,
-                        'text-wrap': 'wrap',
-                        'text-max-width': '130px'
+                        'text-wrap': 'wrap'
                     }
                 },
                 {
@@ -75,6 +79,21 @@ $(document).ready(function () {
                         'border-opacity': 1,
                         'background-blacken': '-0.1'
                     }
+                },
+                {
+                    selector: "node[type='workflow-link']",
+                    css: {
+                        'width': nodeSize - ((bgSize + nodePadding) * 2),
+                        'text-max-width': (nodeSize - ((bgSize + nodePadding) * 2)) - (nodePadding * 2),
+                        'background-image': '/assets/workflow-node-bg.png',
+                        'background-width': bgSize,
+                        'background-height': bgSize,
+                        // The following is a hacky way of making sure the image doesn't overlap the text
+                        'background-position-x': -bgSize,
+                        'background-position-y': '50%',
+                        'padding-left': bgSize + nodePadding,
+                        'padding-right': bgSize + nodePadding
+                    }
                 }
             ],
             userZoomingEnabled: false,
@@ -85,12 +104,12 @@ $(document).ready(function () {
             $('#workflow-toolbar-add').click(function () {
                 $('#node-modal-form-type').val('standard');
                 Workflows.setAddNodeState();
-                return false;
             });
-            $('#workflow-toolbar-link-workflow').click(function () {
+            $('#workflow-toolbar-link-workflow').click(function (e) {
+                e.preventDefault();
                 $('#node-modal-form-type').val('workflow-link');
                 Workflows.setAddNodeState();
-                return false;
+                return true;
             });
             $('#workflow-toolbar-cancel').click(Workflows.cancelState);
             $('#workflow-toolbar-edit').click(Workflows.edit);
@@ -136,7 +155,7 @@ $(document).ready(function () {
             jscolor.installByClassName('jscolor');
         } else {
             Workflows.sidebar.init();
-            cy.on('select', Workflows.sidebar.populate);
+            cy.on('select', Workflows.viewNode);
             cy.on('unselect', Workflows.sidebar.clear);
             cy.$(':selected').unselect();
         }
@@ -350,6 +369,20 @@ var Workflows = {
         }
     },
 
+    viewNode: function (e) {
+        if (e.cyTarget.isNode()) {
+            if (e.cyTarget.data('type') === 'workflow-link') {
+                window.location = e.cyTarget.data('workflowPath');
+            } else {
+                Workflows.sidebar.populate(e);
+            }
+        }
+        else if (e.cyTarget.isEdge()) {
+            e.cyTarget.unselect();
+            return false;
+        }
+    },
+
     sidebar: {
         init: function () {
             var sidebar = $('#workflow-diagram-sidebar');
@@ -358,13 +391,8 @@ var Workflows = {
         },
 
         populate: function (e) {
-            if (e.cyTarget.isNode()) {
-                $('#workflow-diagram-sidebar-title').html(e.cyTarget.data('name') || '<span class="muted">Untitled</span>');
-                $('#workflow-diagram-sidebar-desc').html(HandlebarsTemplates['workflows/sidebar_content'](e.cyTarget.data()))
-            } else if (e.cyTarget.isEdge()) {
-                e.cyTarget.unselect();
-                return false;
-            }
+            $('#workflow-diagram-sidebar-title').html(e.cyTarget.data('name') || '<span class="muted">Untitled</span>');
+            $('#workflow-diagram-sidebar-desc').html(HandlebarsTemplates['workflows/sidebar_content'](e.cyTarget.data()))
         },
 
         clear: function () {

@@ -6,6 +6,12 @@ class StaticController < ApplicationController
 
   def privacy; end
 
+  def workflow_viewer
+    respond_to do |format|
+      format.html { render 'static/workflow_viewer', layout: false }
+    end
+  end
+
   def home
     @hide_search_box = true
     @resources = []

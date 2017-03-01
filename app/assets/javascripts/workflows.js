@@ -7,9 +7,19 @@ $(document).ready(function () {
     var hideChildNodes = cytoscapeElement.data('hideChildNodes');
 
     if (wfJsonElement.length && cytoscapeElement.length) {
+        Workflows.load(JSON.parse(wfJsonElement.html()), cytoscapeElement,
+            { editable: editable, hideChildNodes: hideChildNodes });
+    }
+});
+
+var Workflows = {
+    load: function (workflow, cytoscapeElement, options) {
+        var editable = options ? options.editable : false;
+        var hideChildNodes = options ? options.hideChildNodes : false;
+
         var cy = window.cy = cytoscape({
             container: cytoscapeElement[0],
-            elements: JSON.parse(wfJsonElement.html()),
+            elements: workflow,
             layout: {
                 name: 'preset',
                 padding: 20
@@ -175,10 +185,8 @@ $(document).ready(function () {
                 cy.resize();
             }
         });
-    }
-});
+    },
 
-var Workflows = {
     formSubmitted: false,
 
     handleClick: function (e) {
@@ -538,7 +546,7 @@ var Workflows = {
             $(this).parents('.associated-resource').remove();
             return false;
         },
-        
+
         // Fetch the associated resources from the modal. Returns an array of objects that can be added to a node's data
         fetch: function (node) {
             var resources = [];

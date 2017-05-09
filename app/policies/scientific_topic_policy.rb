@@ -1,2 +1,0 @@
-class ScientificTopicPolicy < ApplicationPolicy
-end

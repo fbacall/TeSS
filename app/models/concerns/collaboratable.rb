@@ -1,5 +1,4 @@
 module Collaboratable
-
   extend ActiveSupport::Concern
 
   included do
@@ -8,7 +7,6 @@ module Collaboratable
   end
 
   def collaborator?(user)
-    self.collaborators.include?(user)
+    collaborators.include?(user)
   end
-
 end

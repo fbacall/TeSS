@@ -2,7 +2,6 @@ require 'test_helper'
 require 'sidekiq/testing'
 
 class EditSuggestionWorkerTest < ActiveSupport::TestCase
-
   setup do
     mock_biotools
   end
@@ -14,7 +13,7 @@ class EditSuggestionWorkerTest < ActiveSupport::TestCase
 
     Sidekiq::Testing.inline! do
       assert_difference('EditSuggestion.count', 1) do
-        EditSuggestionWorker.perform_async([material.id,material.class.name])
+        EditSuggestionWorker.perform_async([material.id, material.class.name])
       end
     end
 
@@ -33,7 +32,7 @@ class EditSuggestionWorkerTest < ActiveSupport::TestCase
 
     Sidekiq::Testing.inline! do
       assert_difference('EditSuggestion.count', 1) do
-        EditSuggestionWorker.perform_async([event.id,event.class.name])
+        EditSuggestionWorker.perform_async([event.id, event.class.name])
       end
     end
 
@@ -52,7 +51,7 @@ class EditSuggestionWorkerTest < ActiveSupport::TestCase
 
     Sidekiq::Testing.inline! do
       assert_difference('EditSuggestion.count', 1) do
-        EditSuggestionWorker.perform_async([workflow.id,workflow.class.name])
+        EditSuggestionWorker.perform_async([workflow.id, workflow.class.name])
       end
     end
 
@@ -63,5 +62,4 @@ class EditSuggestionWorkerTest < ActiveSupport::TestCase
     assert_includes workflow.edit_suggestion.scientific_topics.map(&:preferred_label), 'Small molecules'
     assert_includes workflow.edit_suggestion.scientific_topics.map(&:preferred_label), 'Molecular dynamics'
   end
-
 end

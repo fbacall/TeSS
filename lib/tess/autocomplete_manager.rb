@@ -2,14 +2,13 @@
 # in lib/tess/keyword_manager.rb
 module Tess
   module AutocompleteManager
-
     def self.included(mod)
       mod.extend(ClassMethods)
     end
 
-    def self.suggestions_file_for(field_name, access='r')
+    def self.suggestions_file_for(field_name, access = 'r')
       file_path = Rails.root.join('lib', 'assets', "#{field_name}_suggestions.txt").to_s
-      if !File.exists?(file_path)
+      unless File.exist?(file_path)
         a = File.open(file_path, 'w')
         a.close
       end
@@ -20,14 +19,13 @@ module Tess
       k = suggestions_file_for(type, 'r')
       words = k.read.split("\n").uniq
       k.close
-      return words
+      words
     end
-
 
     module ClassMethods
       def update_suggestions(*fields)
         cattr_accessor :suggestion_fields_to_add
-        self.suggestion_fields_to_add= fields
+        self.suggestion_fields_to_add = fields
 
         before_save :add_suggestions
         before_destroy :delete_suggestions
@@ -37,16 +35,16 @@ module Tess
 
     module InstanceMethods
       private
+
       def add_suggestions
         self.class.suggestion_fields_to_add.each do |field|
           suggestions = AutocompleteManager.suggestions_array_for(field)
           new_suggestions = self[field].dup
           new_suggestions.each do |suggestion|
-            unless suggestions.include?(suggestion)
-              file = AutocompleteManager.suggestions_file_for(field, 'a+')
-              file << "#{suggestion}\n"
-              file.close
-            end
+            next if suggestions.include?(suggestion)
+            file = AutocompleteManager.suggestions_file_for(field, 'a+')
+            file << "#{suggestion}\n"
+            file.close
           end
         end
       end
@@ -54,19 +52,17 @@ module Tess
       def delete_suggestions
         # pass
       end
-
     end
-
   end
 
   ActiveRecord::Base.class_eval do
     include AutocompleteManager
   end
-# end of lib/keyword_manager.rb
+  # end of lib/keyword_manager.rb
 
-# in your model:
-#   class SomeModel < ActiveRecord::Base
-#     add_keywords(:keywords)
-#     delete_keywords(:keywords)
-#   end
+  # in your model:
+  #   class SomeModel < ActiveRecord::Base
+  #     add_keywords(:keywords)
+  #     delete_keywords(:keywords)
+  #   end
 end

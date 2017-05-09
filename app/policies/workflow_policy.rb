@@ -1,5 +1,4 @@
 class WorkflowPolicy < ResourcePolicy
-
   def update?
     super || @record.collaborator?(@user)
   end
@@ -15,14 +14,13 @@ class WorkflowPolicy < ResourcePolicy
         if @user.is_admin?
           Workflow
         else
-          Workflow.references(:collaborations).includes(:collaborations).
-              where('workflows.public = :public OR workflows.user_id = :user OR collaborations.user_id = :user',
-                    public: true, user: @user)
+          Workflow.references(:collaborations).includes(:collaborations)
+                  .where('workflows.public = :public OR workflows.user_id = :user OR collaborations.user_id = :user',
+                         public: true, user: @user)
         end
       else
         Workflow.where(public: true)
       end
     end
   end
-
 end

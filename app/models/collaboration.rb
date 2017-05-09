@@ -1,5 +1,4 @@
 class Collaboration < ActiveRecord::Base
-
   belongs_to :user
   belongs_to :resource, polymorphic: true
 
@@ -14,5 +13,4 @@ class Collaboration < ActiveRecord::Base
   def reindex_resource
     Sunspot.index(resource) if TeSS::Config.solr_enabled
   end
-
 end

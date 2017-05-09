@@ -1,13 +1,12 @@
 class ContentProvider < ActiveRecord::Base
-
   include PublicActivity::Common
   include LogParameterChanges
 
   extend FriendlyId
   friendly_id :title, use: :slugged
 
-  has_many :materials, :dependent => :destroy
-  has_many :events, :dependent => :destroy
+  has_many :materials, dependent: :destroy
+  has_many :events, dependent: :destroy
 
   belongs_to :user
   belongs_to :node
@@ -16,7 +15,7 @@ class ContentProvider < ActiveRecord::Base
 
   # Remove trailing and squeezes (:squish option) white spaces inside the string (before_validation):
   # e.g. "James     Bond  " => "James Bond"
-  auto_strip_attributes :title, :description, :url, :image_url, :squish => false
+  auto_strip_attributes :title, :description, :url, :image_url, squish: false
 
   validates :title, :url, presence: true
 
@@ -27,8 +26,8 @@ class ContentProvider < ActiveRecord::Base
 
   # The order of these determines which providers have precedence when scraping.
   # Low -> High
-  PROVIDER_TYPE = ['Portal', 'Organisation', 'Project']
-  has_image(placeholder: "/assets/placeholder-organization.png")
+  PROVIDER_TYPE = %w(Portal Organisation Project).freeze
+  has_image(placeholder: '/assets/placeholder-organization.png')
 
   if TeSS::Config.solr_enabled
     # :nocov:
@@ -39,23 +38,19 @@ class ContentProvider < ActiveRecord::Base
         title.downcase.gsub(/^(an?|the) /, '')
       end
       text :description
-      string :keywords, :multiple => true
-      string :node, :multiple => true do
-        unless self.node.blank?
-          self.node.name
-        end
+      string :keywords, multiple: true
+      string :node, multiple: true do
+        node.name unless node.blank?
       end
       text :node do
-        unless self.node.blank?
-          self.node.name
-        end
+        node.name unless node.blank?
       end
       string :content_provider_type
       integer :count do
-        if self.events.count > self.materials.count
-          self.events.count
+        if events.count > materials.count
+          events.count
         else
-          self.materials.count
+          materials.count
         end
       end
     end
@@ -66,15 +61,14 @@ class ContentProvider < ActiveRecord::Base
   # title:text url:text image_url:text description:text
 
   def self.facet_fields
-    %w( keywords node content_provider_type)
+    %w(keywords node content_provider_type)
   end
 
-  def node_name= name
+  def node_name=(name)
     self.node = Node.find_by_name(name)
   end
 
   def precedence
     PROVIDER_TYPE.index(content_provider_type)
   end
-
 end

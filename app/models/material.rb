@@ -1,7 +1,6 @@
 require 'rails/html/sanitizer'
 
 class Material < ActiveRecord::Base
-
   include PublicActivity::Common
   include HasScientificTopics
   include LogParameterChanges
@@ -27,35 +26,31 @@ class Material < ActiveRecord::Base
       text :long_description
       text :short_description
       text :doi
-      string :authors, :multiple => true
+      string :authors, multiple: true
       text :authors
-      string :scientific_topics, :multiple => true do
-        self.scientific_topic_names
+      string :scientific_topics, multiple: true do
+        scientific_topic_names
       end
-      string :target_audience, :multiple => true
+      string :target_audience, multiple: true
       text :target_audience
-      string :keywords, :multiple => true
+      string :keywords, multiple: true
       text :keywords
       string :difficulty_level do
-        Tess::DifficultyDictionary.instance.lookup_value(self.difficulty_level, 'title')
+        Tess::DifficultyDictionary.instance.lookup_value(difficulty_level, 'title')
       end
       text :difficulty_level
-      string :contributors, :multiple => true
+      string :contributors, multiple: true
       text :contributors
       string :content_provider do
-        if !self.content_provider.nil?
-          self.content_provider.title
-        end
+        content_provider.title unless content_provider.nil?
       end
       text :content_provider do
-        if !self.content_provider.nil?
-          self.content_provider.title
-        end
+        content_provider.title unless content_provider.nil?
       end
       string :node, multiple: true do
-        self.associated_nodes.map(&:name)
+        associated_nodes.map(&:name)
       end
-      string :submitter, :multiple => true do
+      string :submitter, multiple: true do
         submitter_index
       end
       text :submitter do
@@ -65,9 +60,7 @@ class Material < ActiveRecord::Base
       time :created_at
       time :last_scraped
       string :user do
-        if self.user
-          self.user.username
-        end
+        user.username if user
       end
     end
     # :nocov:
@@ -83,7 +76,7 @@ class Material < ActiveRecord::Base
 
   # Remove trailing and squeezes (:squish option) white spaces inside the string (before_validation):
   # e.g. "James     Bond  " => "James Bond"
-  auto_strip_attributes :title, :short_description, :long_description, :url, :squish => false
+  auto_strip_attributes :title, :short_description, :long_description, :url, squish: false
 
   validates :title, :short_description, :url, presence: true
 
@@ -95,11 +88,11 @@ class Material < ActiveRecord::Base
 
   update_suggestions(:keywords, :contributors, :authors, :target_audience)
 
-  def short_description= desc
+  def short_description=(desc)
     super(Rails::Html::FullSanitizer.new.sanitize(desc))
   end
 
-  def long_description= desc
+  def long_description=(desc)
     super(Rails::Html::FullSanitizer.new.sanitize(desc))
   end
 
@@ -109,15 +102,14 @@ class Material < ActiveRecord::Base
   end
 
   private
+
   def submitter_index
-    if user = User.find_by_id(self.user_id)
-      if user.profile.firstname or user.profile.surname
-        return "#{user.profile.firstname} #{user.profile.surname}"
+    if user = User.find_by_id(user_id)
+      if user.profile.firstname || user.profile.surname
+        "#{user.profile.firstname} #{user.profile.surname}"
       else
-        return user.username
+        user.username
       end
     end
   end
-
 end
-

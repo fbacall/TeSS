@@ -1,5 +1,4 @@
 class CollaborationsController < ApplicationController
-
   before_filter :get_resource
   before_filter :authorize_resource
 
@@ -34,12 +33,13 @@ class CollaborationsController < ApplicationController
   # Scan the params for the ID of the parent resource, e.g. workflow_id, material_id etc.
   def get_resource
     params.each do |name, value|
-      if name.end_with?('_id')
-        c = name.chomp('_id').classify.constantize rescue NameError
-        if c.method_defined?(:collaborations)
-          @resource = c.friendly.find(value)
-        end
-      end
+      next unless name.end_with?('_id')
+      c = begin
+            name.chomp('_id').classify.constantize
+          rescue
+            NameError
+          end
+      @resource = c.friendly.find(value) if c.method_defined?(:collaborations)
     end
   end
 
@@ -50,5 +50,4 @@ class CollaborationsController < ApplicationController
   def collaboration_params
     params.require(:collaboration).permit(:user_id)
   end
-
 end

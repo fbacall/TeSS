@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
 
   acts_as_token_authenticatable
   include Gravtastic
-  gravtastic :secure => true, :size => 250
+  gravtastic secure: true, size: 250
 
   extend FriendlyId
   friendly_id :username, use: :slugged
@@ -25,8 +25,8 @@ class User < ActiveRecord::Base
 
   has_one :profile, inverse_of: :user, dependent: :destroy
   has_many :materials
-  has_many :packages, :dependent => :destroy
-  has_many :workflows, :dependent => :destroy
+  has_many :packages, dependent: :destroy
+  has_many :workflows, dependent: :destroy
   has_many :content_providers
   has_many :events
   has_many :nodes
@@ -41,18 +41,18 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :omniauthable, :authentication_keys => [:login]
+         :omniauthable, authentication_keys: [:login]
 
   validates :username,
-            :presence => true,
-            :case_sensitive => false,
-            :uniqueness => true
+            presence: true,
+            case_sensitive: false,
+            uniqueness: true
 
   validates :email,
-            :presence => true,
-            :case_sensitive => false
+            presence: true,
+            case_sensitive: false
 
-  validates_format_of :email, :with => Devise.email_regexp
+  validates_format_of :email, with: Devise.email_regexp
 
   accepts_nested_attributes_for :profile
 
@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions.to_h).where(["lower(username) = :value OR lower(email) = :value", {:value => login.downcase}]).first
+      where(conditions.to_h).where(['lower(username) = :value OR lower(email) = :value', { value: login.downcase }]).first
     else
       where(conditions.to_h).first
     end
@@ -73,22 +73,22 @@ class User < ActiveRecord::Base
 
   def set_default_profile
     self.profile ||= Profile.new
-    self.profile.email = (email || unconfirmed_email) if (publicize_email.to_s == '1')
+    self.profile.email = (email || unconfirmed_email) if publicize_email.to_s == '1'
   end
 
- # Check if user has a particular role
+  # Check if user has a particular role
   def has_role?(role)
     self.role && self.role.name == role.to_s
   end
 
   def is_admin?
-    self.has_role?('admin')
+    has_role?('admin')
   end
 
   # Check if user is owner of a resource
   def is_owner?(resource)
     return false if resource.nil?
-    return false if !resource.respond_to?("user".to_sym)
+    return false unless resource.respond_to?('user'.to_sym)
     if self == resource.user
       return true
     else
@@ -97,14 +97,14 @@ class User < ActiveRecord::Base
   end
 
   def is_curator?
-    self.has_role?('curator')
+    has_role?('curator')
   end
 
   def skip_email_confirmation_for_non_production
     # In development and test environments, set the user as confirmed
     # after creation but before save
     # so no confirmation emails are sent
-    self.skip_confirmation! unless Rails.env.production?
+    skip_confirmation! unless Rails.env.production?
   end
 
   def self.get_default_user
@@ -114,7 +114,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    n = "#{username}"
+    n = username.to_s
     if self.profile && self.profile.firstname
       n += " (#{self.profile.firstname} #{self.profile.surname})"
     end
@@ -144,11 +144,11 @@ class User < ActiveRecord::Base
     # TODO: Decide what to do about users who have an account but authenticate later on via Elixir AAI.
     # TODO: The code below will update their account to note the Elixir auth. but leave their password intact;
     # TODO: is this what we should be doing?
-    #user = User.where(:provider => auth.provider, :uid => auth.uid).first
+    # user = User.where(:provider => auth.provider, :uid => auth.uid).first
     # `auth.info` fields: email, first_name, gender, image, last_name, name, nickname, phone, urls
-    user = User.where(:email => auth.info.email ).first
+    user = User.where(email: auth.info.email).first
     if user
-      if user.provider.nil? and user.uid.nil?
+      if user.provider.nil? && user.uid.nil?
         user.uid = auth.uid
         user.provider = auth.provider
         user.save
@@ -159,10 +159,9 @@ class User < ActiveRecord::Base
                       uid: auth.uid,
                       email: auth.info.email,
                       username: User.unique_username(auth.info.nickname || auth.info.openid || 'user'),
-                      password: Devise.friendly_token[0,20],
+                      password: Devise.friendly_token[0, 20],
                       profile_attributes: { firstname: auth.info.first_name,
-                                            surname: auth.info.last_name }
-      )
+                                            surname: auth.info.last_name })
       user.skip_confirmation!
     end
 
@@ -185,9 +184,9 @@ class User < ActiveRecord::Base
     #   node.update_attribute(:user_id, get_default_user.id)
     # end
     default_user = User.get_default_user
-    self.materials.each{|x| x.update_attribute(:user, default_user) } if self.materials.any?
-    self.events.each{|x| x.update_attribute(:user, default_user) } if self.events.any?
-    self.content_providers.each{|x| x.update_attribute(:user, default_user)} if self.content_providers.any?
-    self.nodes.each{|x| x.update_attribute(:user, default_user)} if self.nodes.any?
+    materials.each { |x| x.update_attribute(:user, default_user) } if materials.any?
+    events.each { |x| x.update_attribute(:user, default_user) } if events.any?
+    content_providers.each { |x| x.update_attribute(:user, default_user) } if content_providers.any?
+    nodes.each { |x| x.update_attribute(:user, default_user) } if nodes.any?
   end
 end

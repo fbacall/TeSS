@@ -1,5 +1,4 @@
 class Node < ActiveRecord::Base
-
   include PublicActivity::Common
   include LogParameterChanges
 
@@ -18,10 +17,10 @@ class Node < ActiveRecord::Base
 
   accepts_nested_attributes_for :staff, allow_destroy: true
 
-  clean_array_fields(:carousel_images) #, :institutions
+  clean_array_fields(:carousel_images) # , :institutions
 
   validates :name, presence: true, uniqueness: true
-  validates :home_page, format: { with: URI.regexp }, if: Proc.new { |a| a.home_page.present? }
+  validates :home_page, format: { with: URI.regexp }, if: proc { |a| a.home_page.present? }
   # validate :has_training_coordinator
 
   alias_attribute(:title, :name)
@@ -44,14 +43,14 @@ class Node < ActiveRecord::Base
     # :nocov:
   end
 
-  MEMBER_STATUS = ['Member', 'Observer']
+  MEMBER_STATUS = %w(Member Observer).freeze
   COUNTRIES = JSON.parse(File.read(File.join(Rails.root, 'config', 'data', 'countries.json')))
 
   def self.load_from_hash(hash, verbose: false)
-    hash["nodes"].map do |node_data|
-      node = Node.find_or_initialize_by(name: node_data["name"])
-      puts "#{node.new_record? ? 'Creating' : 'Updating'}: #{node_data["name"]}" if verbose
-      staff_data = node_data.delete("staff")
+    hash['nodes'].map do |node_data|
+      node = Node.find_or_initialize_by(name: node_data['name'])
+      puts "#{node.new_record? ? 'Creating' : 'Updating'}: #{node_data['name']}" if verbose
+      staff_data = node_data.delete('staff')
       node.attributes = node_data
       node.user ||= User.get_default_user
 
@@ -61,10 +60,10 @@ class Node < ActiveRecord::Base
       end
 
       if node.save
-        puts "Success" if verbose
+        puts 'Success' if verbose
       elsif verbose
-        puts "Failure:"
-        node.errors.full_messages.each { |msg|  puts " * #{msg}" }
+        puts 'Failure:'
+        node.errors.full_messages.each { |msg| puts " * #{msg}" }
       end
       puts if verbose
 
@@ -73,7 +72,7 @@ class Node < ActiveRecord::Base
   end
 
   def self.facet_fields
-    %w( member_status )
+    %w(member_status)
   end
 
   private
@@ -83,5 +82,4 @@ class Node < ActiveRecord::Base
       errors.add(:base, 'Requires at least one training coordinator to be defined')
     end
   end
-
 end

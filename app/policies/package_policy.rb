@@ -1,5 +1,4 @@
 class PackagePolicy < ResourcePolicy
-
   def show?
     @record.public? || manage?
   end
@@ -9,5 +8,4 @@ class PackagePolicy < ResourcePolicy
       Package.visible_by(@user)
     end
   end
-
 end

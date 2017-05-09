@@ -5,20 +5,18 @@ class MaterialTest < ActiveSupport::TestCase
   #   assert true
   # end
 
-
   setup do
-    @user = User.new(:username=>'bobo',
-                  :email=>'exampl@example.com',
-                  :role => Role.first,
-                  :password => SecureRandom.base64
-    )
+    @user = User.new(username: 'bobo',
+                     email: 'exampl@example.com',
+                     role: Role.first,
+                     password: SecureRandom.base64)
     @user.save!
-    @material = Material.new(:title => 'title',
-                             :short_description => 'short desc',
-                             :url => 'http://goog.e.com',
-                             :user => @user,
-                             :authors => ['horace', 'flo'],
-                             :content_provider => ContentProvider.first)
+    @material = Material.new(title: 'title',
+                             short_description: 'short desc',
+                             url: 'http://goog.e.com',
+                             user: @user,
+                             authors: %w(horace flo),
+                             content_provider: ContentProvider.first)
     @material.save!
   end
 
@@ -27,7 +25,7 @@ class MaterialTest < ActiveSupport::TestCase
     owner = @material.user
     assert_not_equal 'default_user', owner.role.name
     owner.destroy
-    #Reload the material
+    # Reload the material
     material = Material.find_by_id(material_id)
     assert_equal 'default_user', material.user.role.name
   end
@@ -46,7 +44,7 @@ class MaterialTest < ActiveSupport::TestCase
 
   test 'should strip bad values from authors array input' do
     authors = ['john', 'bob', nil, [], '', 'frank']
-    expected_authors = ['john', 'bob', 'frank']
+    expected_authors = %w(john bob frank)
     assert @material.update_attributes(authors: authors)
     assert_equal expected_authors, @material.authors
   end
@@ -89,8 +87,8 @@ class MaterialTest < ActiveSupport::TestCase
 
     refute m.save
     assert_equal 2, m.errors.count
-    assert_equal ["must be a controlled vocabulary term"], m.errors[:difficulty_level]
-    assert_equal ["must be a controlled vocabulary term"], m.errors[:licence]
+    assert_equal ['must be a controlled vocabulary term'], m.errors[:difficulty_level]
+    assert_equal ['must be a controlled vocabulary term'], m.errors[:licence]
 
     m.difficulty_level = 'beginner'
     m.licence = 'GPL-3.0'
@@ -112,7 +110,6 @@ class MaterialTest < ActiveSupport::TestCase
     assert_not_includes m.node_names, nodes(:good).name
     assert_includes m.node_names, nodes(:westeros).name
   end
-
 
   test 'can set licence either using key or URL' do
     m = materials(:good_material)

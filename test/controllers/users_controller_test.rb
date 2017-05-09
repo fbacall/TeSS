@@ -20,7 +20,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   # User new is handled by devise
-  test "should never allow user new route" do
+  test 'should never allow user new route' do
     get :new
     assert_redirected_to new_user_session_path
     sign_in users(:regular_user)
@@ -31,46 +31,46 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :forbidden
   end
 
-  test "should be able to create user whilst logged in as admin" do
+  test 'should be able to create user whilst logged in as admin' do
     sign_in users(:admin) # should this be restricted to admins?
     assert_difference('User.count') do
-      post :create, user: { username: 'frank', email: 'frank@notarealdomain.org', password: 'franksreallylongpass'}
+      post :create, user: { username: 'frank', email: 'frank@notarealdomain.org', password: 'franksreallylongpass' }
     end
     assert_redirected_to user_path(assigns(:user))
   end
 
-  test "should not be able create user if not admin" do #because you use users#sign_up in devise
+  test 'should not be able create user if not admin' do # because you use users#sign_up in devise
     assert_no_difference('User.count') do
-      post :create, user: { username: 'frank', email: 'frank@notarealdomain.org', password: 'franksreallylongpass'}
+      post :create, user: { username: 'frank', email: 'frank@notarealdomain.org', password: 'franksreallylongpass' }
     end
     assert_redirected_to new_user_session_path
     sign_in users(:regular_user)
     assert_no_difference('User.count') do
-      post :create, user: { username: 'frank', email: 'frank@notarealdomain.org', password: 'franksreallylongpass'}
+      post :create, user: { username: 'frank', email: 'frank@notarealdomain.org', password: 'franksreallylongpass' }
     end
     assert_response :forbidden
   end
 
-  test "should show user if admin" do
+  test 'should show user if admin' do
     sign_in users(:admin)
     get :show, id: @user
     assert_response :success
   end
 
-  test "should show other users page if not admin or self" do
+  test 'should show other users page if not admin or self' do
     sign_in users(:another_regular_user)
     get :show, id: @user
-    assert_response :success #FORBIDDEN PAGE!?
+    assert_response :success # FORBIDDEN PAGE!?
   end
 
-  test "should show user with email address as username" do
+  test 'should show user with email address as username' do
     user = users(:email_address_user)
     sign_in user
     get :show, id: user
     assert_response :success
   end
 
- test "should only allow edit for admin and self" do
+  test 'should only allow edit for admin and self' do
     sign_in users(:regular_user)
     get :edit, id: @user
     assert_response :success
@@ -81,16 +81,16 @@ class UsersControllerTest < ActionController::TestCase
 
     sign_in users(:another_regular_user)
     get :edit, id: @user
-    #assert_redirected_to root_path
+    # assert_redirected_to root_path
   end
 
-  test "should update profile" do
+  test 'should update profile' do
     sign_in users(:regular_user)
-    patch :update, id: @user, user: { profile_attributes: { email: 'hot@mail.com'}}
+    patch :update, id: @user, user: { profile_attributes: { email: 'hot@mail.com' } }
     assert_redirected_to user_path(assigns(:user))
   end
 
-  test "should reset token" do
+  test 'should reset token' do
     sign_in users(:regular_user)
     old_token = @user.authentication_token
     patch :change_token, id: @user
@@ -98,7 +98,7 @@ class UsersControllerTest < ActionController::TestCase
     assert_not_equal old_token, new_token
   end
 
-  test "should destroy user" do
+  test 'should destroy user' do
     sign_in @user
 
     # Create default user that will be used as the new 'owner' of objects
@@ -144,5 +144,4 @@ class UsersControllerTest < ActionController::TestCase
     assert_not_equal roles(:curator), assigns(:user).role
     assert_not_equal 'George', assigns(:user).profile.firstname
   end
-
 end

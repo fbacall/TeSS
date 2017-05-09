@@ -24,8 +24,7 @@ class MaterialsController < ApplicationController
 
   # GET /materials/1
   # GET /materials/1.json
-  def show
-  end
+  def show; end
 
   # GET /materials/new
   def new
@@ -55,13 +54,13 @@ class MaterialsController < ApplicationController
     if @material
       respond_to do |format|
         format.html { redirect_to @material }
-        #format.json { render json: @material }
+        # format.json { render json: @material }
         format.json { render :show, location: @material }
       end
     else
       respond_to do |format|
-        format.html { render :nothing => true, :status => 200, :content_type => 'text/html' }
-        format.json { render json: {}, :status => 200, :content_type => 'application/json' }
+        format.html { render nothing: true, status: 200, content_type: 'text/html' }
+        format.json { render json: {}, status: 200, content_type: 'application/json' }
       end
     end
   end
@@ -77,7 +76,7 @@ class MaterialsController < ApplicationController
       if @material.save
         @material.create_activity :create, owner: current_user
         look_for_topics(@material)
-        #current_user.materials << @material
+        # current_user.materials << @material
         format.html { redirect_to @material, notice: 'Material was successfully created.' }
         format.json { render :show, status: :created, location: @material }
       else
@@ -98,9 +97,7 @@ class MaterialsController < ApplicationController
         # suggest the same topics on every edit.
         # TODO: Consider whether this is proper behaviour or whether a user should explicitly delete this
         # TODO: suggestion, somehow.
-        if @material.edit_suggestion
-          @material.edit_suggestion.delete
-        end
+        @material.edit_suggestion.delete if @material.edit_suggestion
         format.html { redirect_to @material, notice: 'Material was successfully updated.' }
         format.json { render :show, status: :ok, location: @material }
       else
@@ -128,20 +125,21 @@ class MaterialsController < ApplicationController
     # Go through each selected package
     # and update its resources to include this material.
     # Go through each other package that is not selected and remove this material from it.
-    packages = params[:material][:package_ids].select{|p| !p.blank?}
-    packages = packages.collect{|package| Package.find_by_id(package)}
+    packages = params[:material][:package_ids].select { |p| !p.blank? }
+    packages = packages.collect { |package| Package.find_by_id(package) }
     packages_to_remove = @material.packages - packages
     packages.each do |package|
       package.update_resources_by_id((package.materials + [@material.id]).uniq, nil)
     end
     packages_to_remove.each do |package|
-      package.update_resources_by_id((package.materials.collect{|x| x.id} - [@material.id]).uniq, nil)
+      package.update_resources_by_id((package.materials.collect(&:id) - [@material.id]).uniq, nil)
     end
     flash[:notice] = "Material has been included in #{pluralize(packages.count, 'package')}"
     redirect_to @material
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_material
     @material = Material.friendly.find(params[:id])
@@ -149,16 +147,13 @@ class MaterialsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def material_params
-    params.require(:material).permit(:id, :title, :url, :short_description, :long_description, :doi,:last_scraped, :scraper_record,
-                                     :remote_created_date,  :remote_updated_date, {:package_ids => []},
-                                     :content_provider_id, {:keywords => []},
-                                     {:scientific_topic_names => []},
-                                     :licence, :difficulty_level, {:contributors => []},
-                                     {:authors => []}, {:target_audience => []}, {:node_ids => []}, {:node_names => []},
+    params.require(:material).permit(:id, :title, :url, :short_description, :long_description, :doi, :last_scraped, :scraper_record,
+                                     :remote_created_date, :remote_updated_date, { package_ids: [] },
+                                     :content_provider_id, { keywords: [] },
+                                     { scientific_topic_names: [] },
+                                     :licence, :difficulty_level, { contributors: [] },
+                                     { authors: [] }, { target_audience: [] }, { node_ids: [] }, { node_names: [] },
                                      external_resources_attributes: [:id, :url, :title, :_destroy], event_ids: [],
                                      locked_fields: [])
   end
-
-
-
 end

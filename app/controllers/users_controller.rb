@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-
   prepend_before_action :set_user, only: [:show, :edit, :update, :destroy, :change_token]
   prepend_before_action :init_user, only: [:new, :create]
   before_action :set_breadcrumbs
@@ -18,8 +17,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.json
-  def show
-  end
+  def show; end
 
   # GET /users/new
   def new
@@ -53,7 +51,7 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
-  #THIS IS FOR UPDATING PROFILES
+  # THIS IS FOR UPDATING PROFILES
   def update
     authorize @user
     respond_to do |format|
@@ -75,7 +73,7 @@ class UsersController < ApplicationController
     @user.create_activity :destroy, owner: current_user
     @user.destroy
     respond_to do |format|
-      format.html { redirect_to users_path, notice: 'User was successfully destroyed.' }  # Devise is also doing redirection here
+      format.html { redirect_to users_path, notice: 'User was successfully destroyed.' } # Devise is also doing redirection here
       format.json { head :no_content }
     end
   end
@@ -83,15 +81,15 @@ class UsersController < ApplicationController
   def change_token
     authorize @user
     if @user.authentication_token.nil?
-      flash[:alert] = "Authentication token cannot be set to nil - action not allowed (status code: 422 Unprocessable Entity)."
-      handle_error(:unprocessable_entity) and return
+      flash[:alert] = 'Authentication token cannot be set to nil - action not allowed (status code: 422 Unprocessable Entity).'
+      handle_error(:unprocessable_entity) && return
     end
     @user.authentication_token = Devise.friendly_token
     if @user.save
-      flash[:notice] = "Authentication token successfully regenerated."
+      flash[:notice] = 'Authentication token successfully regenerated.'
       redirect_to @user
     else
-      flash[:alert] = "Failed to regenerate Authentication token (status code: 422 Unprocessable Entity)."
+      flash[:alert] = 'Failed to regenerate Authentication token (status code: 422 Unprocessable Entity).'
       handle_error(:unprocessable_entity)
     end
   end
@@ -112,5 +110,4 @@ class UsersController < ApplicationController
     allowed_parameters << :role_id if policy(@user).change_role?
     params.require(:user).permit(allowed_parameters)
   end
-
 end

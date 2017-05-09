@@ -112,14 +112,14 @@ module SearchableIndex
           with('end').greater_than(Time.zone.now)
         end
       end
-      if [Event, Material, ContentProvider].include?(model) and selected_facets.keys.include?('elixir')
+      if [Event, Material, ContentProvider].include?(model) && selected_facets.keys.include?('elixir')
         if selected_facets['elixir']
           any_of do
-            with(:node, Node.all.map{|x| x.title})
+            with(:node, Node.all.map(&:title))
             with(:content_provider, 'ELIXIR')
           end
         else
-          without(:node, Node.all.map{|x| x.title})
+          without(:node, Node.all.map(&:title))
         end
       end
       if selected_facets.keys.include?('days_since_scrape')

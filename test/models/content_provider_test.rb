@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ContentProviderTest < ActiveSupport::TestCase
-
   setup do
     mock_images
   end
@@ -28,5 +27,4 @@ class ContentProviderTest < ActiveSupport::TestCase
     content_provider = content_providers(:goblet)
     assert content_provider.node == nodes(:good)
   end
-
 end

@@ -1,5 +1,4 @@
 class Workflow < ActiveRecord::Base
-
   include PublicActivity::Common
   include HasScientificTopics
   include Collaboratable
@@ -27,20 +26,20 @@ class Workflow < ActiveRecord::Base
       text :node_descriptions do
         node_index('description')
       end
-      string :authors, :multiple => true
+      string :authors, multiple: true
       text :authors
-      string :scientific_topics, :multiple => true do
-        self.scientific_topic_names
+      string :scientific_topics, multiple: true do
+        scientific_topic_names
       end
-      string :target_audience, :multiple => true
+      string :target_audience, multiple: true
       text :target_audience
-      string :keywords, :multiple => true
+      string :keywords, multiple: true
       text :keywords
       string :difficulty_level do
-        Tess::DifficultyDictionary.instance.lookup_value(self.difficulty_level, 'title')
+        Tess::DifficultyDictionary.instance.lookup_value(difficulty_level, 'title')
       end
       text :difficulty_level
-      string :contributors, :multiple => true
+      string :contributors, multiple: true
       text :contributors
 
       integer :user_id
@@ -68,7 +67,7 @@ class Workflow < ActiveRecord::Base
   end
 
   def new_fork(user)
-    self.dup.tap do |wf|
+    dup.tap do |wf|
       wf.title = "Fork of #{wf.title}"
       wf.user = user
     end
@@ -93,10 +92,10 @@ class Workflow < ActiveRecord::Base
       modified_nodes = modified_node_ids.map { |i| workflow_content['nodes'].detect { |n| n['data']['id'] == i } }
 
       if added_node_ids.any? || removed_node_ids.any? || modified_node_ids.any?
-        self.create_activity :modify_diagram, parameters: {
-            added_nodes: added_nodes,
-            removed_nodes: removed_nodes,
-            modified_nodes: modified_nodes
+        create_activity :modify_diagram, parameters: {
+          added_nodes: added_nodes,
+          removed_nodes: removed_nodes,
+          modified_nodes: modified_nodes
         }
       end
     end
@@ -104,10 +103,12 @@ class Workflow < ActiveRecord::Base
 
   def node_index(type)
     results = []
-    self.workflow_content['nodes'].each do |node|
-      results << node['data'][type]
-    end if self.workflow_content['nodes']
-    return results
+    if workflow_content['nodes']
+      workflow_content['nodes'].each do |node|
+        results << node['data'][type]
+      end
+    end
+    results
   end
 
   # Stop the huge JSON blob being printed in the console when inspecting a workflow
@@ -119,12 +120,11 @@ class Workflow < ActiveRecord::Base
     if user && user.is_admin?
       all
     elsif user
-      references(:collaborations).includes(:collaborations).
-        where("#{self.table_name}.public = :public OR #{self.table_name}.user_id = :user OR collaborations.user_id = :user",
-              public: true, user: user)
+      references(:collaborations).includes(:collaborations)
+                                 .where("#{table_name}.public = :public OR #{table_name}.user_id = :user OR collaborations.user_id = :user",
+                                        public: true, user: user)
     else
       where(public: true)
     end
   end
-
 end

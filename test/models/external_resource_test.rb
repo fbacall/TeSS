@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ExternalResourceTest < ActiveSupport::TestCase
-
   test 'correctly identifiers a bio.tools external resource' do
     assert_equal external_resources(:biotools).is_tool?, true
     assert_equal external_resources(:biotwools).is_tool?, true
@@ -18,5 +17,4 @@ class ExternalResourceTest < ActiveSupport::TestCase
     assert_equal 'https://bio.tools/api/tool/FuNeL', api_url
     assert_empty external_resources(:google).api_url_of_tool
   end
-
 end

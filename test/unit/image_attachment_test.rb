@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ImageAttachmentTest < ActiveSupport::TestCase
-
   setup do
     mock_images
   end
@@ -101,5 +100,4 @@ class ImageAttachmentTest < ActiveSupport::TestCase
     assert_equal 1, provider.errors[:image].length
     assert provider.errors[:image].first.include?('contents that are not what they are reported to be')
   end
-
 end

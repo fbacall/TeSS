@@ -5,20 +5,18 @@ module Tess
   # Inspired by SEEK's ImageFileDictionary
   # https://github.com/seek4science/seek/blob/master/lib/seek/image_file_dictionary.rb
   class LicenceDictionary < Dictionary
-
     def licence_abbreviations
       @abbrvs ||= @dictionary.keys
     end
 
-    def licence_names(licence_dictionary=@dictionary)
+    def licence_names(licence_dictionary = @dictionary)
       @licence_names ||= licence_dictionary.map { |_, value| value['title'] }
     end
 
     private
 
     def dictionary_filepath
-      File.join(Rails.root, "config", "dictionaries", "licences.yml")
+      File.join(Rails.root, 'config', 'dictionaries', 'licences.yml')
     end
-
   end
 end

@@ -1,6 +1,5 @@
 module Tess
   class Dictionary
-
     include Singleton
 
     def initialize
@@ -13,7 +12,7 @@ module Tess
 
     # Returns an array: [id, values]
     def lookup_by(key, value)
-      @dictionary.select { |id, values| values[key] == value }.to_a.flatten
+      @dictionary.select { |_id, values| values[key] == value }.to_a.flatten
     end
 
     # Find the value for the given key, for the given entry.
@@ -29,11 +28,11 @@ module Tess
     end
 
     def options_for_select(existing = nil)
-      if existing
-        d = @dictionary.select { |key, value| existing.include?(key) }
-      else
-        d = @dictionary
-      end
+      d = if existing
+            @dictionary.select { |key, _value| existing.include?(key) }
+          else
+            @dictionary
+          end
 
       d.map do |key, value|
         [value['title'], key]
@@ -41,14 +40,13 @@ module Tess
     end
 
     def values_for_search(keys)
-      @dictionary.select { |key, value| keys.include?(key) }.map { |key, value| value['title'] }
+      @dictionary.select { |key, _value| keys.include?(key) }.map { |_key, value| value['title'] }
     end
 
     private
 
     def load_dictionary
-      YAML.load(File.read(dictionary_filepath)).with_indifferent_access
+      YAML.safe_load(File.read(dictionary_filepath)).with_indifferent_access
     end
-
   end
 end

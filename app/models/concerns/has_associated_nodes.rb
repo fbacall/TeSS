@@ -1,5 +1,4 @@
 module HasAssociatedNodes
-
   extend ActiveSupport::Concern
 
   included do
@@ -8,13 +7,13 @@ module HasAssociatedNodes
   end
 
   def associated_nodes
-    n = self.nodes.to_a
-    n << self.content_provider.node if self.content_provider
+    n = nodes.to_a
+    n << content_provider.node if content_provider
 
     n.compact.uniq
   end
 
-  def node_names= names
+  def node_names=(names)
     nodes = Node.where(name: names).to_a
 
     self.nodes = nodes
@@ -27,5 +26,4 @@ module HasAssociatedNodes
   def associated_node_names
     associated_nodes.map(&:name)
   end
-
 end

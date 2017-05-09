@@ -22,8 +22,8 @@ module ApplicationHelper
     not_scraped_recently: { icon: 'fa-exclamation-circle', message: 'This record has not been updated since %SUB%' },
     event: { icon: 'fa-calendar', message: 'This is a training event' },
     material: { icon: 'fa-book', message: 'This is a training material' },
-    suggestion: { icon: 'fa-commenting-o', message: 'This record has one or more suggested scientific topics'},
-    private: { icon: 'fa-eye-slash', message: 'This resource is private' },
+    suggestion: { icon: 'fa-commenting-o', message: 'This record has one or more suggested scientific topics' },
+    private: { icon: 'fa-eye-slash', message: 'This resource is private' }
   }.freeze
 
   def scrape_status_icon(record, size = nil)
@@ -45,9 +45,9 @@ module ApplicationHelper
     nil
   end
 
-  def suggestion_icon(record,size = nil)
+  def suggestion_icon(record, size = nil)
     if record.edit_suggestion
-      return "<span class='fresh-icon pull-right' style='padding-right: 10px;'>#{icon_for(:suggestion,size)}</span>".html_safe
+      "<span class='fresh-icon pull-right' style='padding-right: 10px;'>#{icon_for(:suggestion, size)}</span>".html_safe
     end
   end
 
@@ -85,14 +85,10 @@ module ApplicationHelper
   # Only show icons/tooltips if there's a logged in user
   def show_event_icons(record)
     if record.content_provider
-      if record.content_provider.title.downcase == 'iann'
-        return false
-      end
+      return false if record.content_provider.title.casecmp('iann').zero?
     end
-    unless current_user and current_user.is_admin?
-      return false
-    end
-    return true
+    return false unless current_user && current_user.is_admin?
+    true
   end
 
   def bootstrap_class_for(flash_type)
@@ -219,7 +215,7 @@ module ApplicationHelper
     if request.env['PATH_INFO'] == '/users/sign_up'
       return "<script src='https://www.google.com/recaptcha/api.js'></script>\n"
     end
-    return ''
+    ''
   end
 
   def twitter_link(username)
@@ -307,20 +303,19 @@ module ApplicationHelper
   ActionView::Helpers::FormBuilder.class_eval do
     def markdown_area(name, options = {})
       text_area(name, options) +
-          @template.content_tag(:p, class: 'help-block text-right') do
-            @template.image_tag('markdown_logo.png', width: 18) +
-                ' This field supports markdown, ' +
-                @template.link_to('click here for a reference on markdown syntax.',
-                        'https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet', target: '_blank')
-          end
+        @template.content_tag(:p, class: 'help-block text-right') do
+          @template.image_tag('markdown_logo.png', width: 18) +
+            ' This field supports markdown, ' +
+            @template.link_to('click here for a reference on markdown syntax.',
+                              'https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet', target: '_blank')
+        end
     end
 
-    def field_lock(name, options = {})
+    def field_lock(name, _options = {})
       field_name = "#{object.class.name.downcase}[locked_fields][]"
       field_id = "#{object.class.name.downcase}_locked_fields_#{name}"
       @template.check_box_tag(field_name, name.to_s, object.field_locked?(name), id: field_id, class: 'field-lock') +
-          @template.label_tag(field_id, '', title: 'Lock this field to prevent it being overwritten when automated scrapers are run')
+        @template.label_tag(field_id, '', title: 'Lock this field to prevent it being overwritten when automated scrapers are run')
     end
   end
-
 end

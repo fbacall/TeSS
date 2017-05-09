@@ -1,5 +1,4 @@
 class WorkflowsController < ApplicationController
-
   layout 'application'
 
   before_action :set_workflow, only: [:show, :edit, :update, :destroy, :fork, :embed]
@@ -10,8 +9,7 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows
   # GET /workflows.json
-  def index
-  end
+  def index; end
 
   # GET /workflows/1
   # GET /workflows/1.json
@@ -62,9 +60,7 @@ class WorkflowsController < ApplicationController
         @workflow.create_activity(:update, owner: current_user) if @workflow.log_update_activity?
         # TODO: Consider whether this is proper behaviour or whether a user should explicitly delete this
         # TODO: suggestion, somehow.
-        if @workflow.edit_suggestion
-          @workflow.edit_suggestion.delete
-        end
+        @workflow.edit_suggestion.delete if @workflow.edit_suggestion
         format.html { redirect_to @workflow, notice: 'Workflow was successfully updated.' }
         format.json { render :show, status: :ok, location: @workflow }
       else
@@ -109,10 +105,9 @@ class WorkflowsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def workflow_params
     params.require(:workflow).permit(:title, :description, :user_id, :workflow_content, :doi,
-                                     :remote_created_date,  :remote_updated_date, { keywords: [] },
+                                     :remote_created_date, :remote_updated_date, { keywords: [] },
                                      { scientific_topic_names: [] }, :licence, :difficulty_level,
                                      { contributors: [] }, { authors: [] }, { target_audience: [] },
                                      :hide_child_nodes, :public)
   end
-
 end

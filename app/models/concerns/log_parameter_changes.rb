@@ -1,8 +1,7 @@
 module LogParameterChanges
-
   extend ActiveSupport::Concern
 
-  IGNORED_ATTRIBUTES = ['id', 'updated_at', 'workflow_content', 'last_scraped']
+  IGNORED_ATTRIBUTES = %w(id updated_at workflow_content last_scraped).freeze
 
   included do
     after_update :log_parameter_changes
@@ -11,7 +10,7 @@ module LogParameterChanges
   class_methods do
     def is_foreign_key?(attr)
       return false unless attr.end_with?('_id')
-      self.reflections.keys.include?(attr.chomp('_id'))
+      reflections.keys.include?(attr.chomp('_id'))
     end
   end
 
@@ -22,7 +21,7 @@ module LogParameterChanges
   private
 
   def log_parameter_changes
-    (self.changed - IGNORED_ATTRIBUTES).each do |changed_attribute|
+    (changed - IGNORED_ATTRIBUTES).each do |changed_attribute|
       parameters = { attr: changed_attribute }
       if self.class.is_foreign_key?(changed_attribute)
         ob = self.send(changed_attribute.chomp('_id'))
@@ -34,8 +33,7 @@ module LogParameterChanges
       end
       parameters[:new_val] = self.send(changed_attribute)
 
-      self.create_activity :update_parameter, parameters: parameters
+      create_activity :update_parameter, parameters: parameters
     end
   end
-
 end

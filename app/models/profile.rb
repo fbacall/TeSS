@@ -1,10 +1,8 @@
 class Profile < ActiveRecord::Base
   belongs_to :user, inverse_of: :profile
 
-=begin
-  extend FriendlyId
-  friendly_id [:firstname, :surname], use: :slugged
-=end
+  #   extend FriendlyId
+  #   friendly_id [:firstname, :surname], use: :slugged
 
   if TeSS::Config.solr_enabled
     # :nocov:
@@ -19,6 +17,5 @@ class Profile < ActiveRecord::Base
     # :nocov:
   end
 
-  #validates :email, presence: true
-
+  # validates :email, presence: true
 end

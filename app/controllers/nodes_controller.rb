@@ -15,8 +15,7 @@ class NodesController < ApplicationController
 
   # GET /nodes/1
   # GET /nodes/1.json
-  def show
-  end
+  def show; end
 
   # GET /nodes/new
   def new
@@ -77,6 +76,7 @@ class NodesController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_node
     @node = Node.friendly.find(params[:id])
@@ -86,7 +86,6 @@ class NodesController < ApplicationController
   def node_params
     params.require(:node).permit(:name, :member_status, :country_code, :home_page, :staff, :twitter, :image_url,
                                  :description, { institutions: [] }, { carousel_images: [] },
-                                 { staff_attributes: [:id, :name, :email, :role, :image, :image_url, :_destroy] })
+                                 staff_attributes: [:id, :name, :email, :role, :image, :image_url, :_destroy])
   end
-
 end

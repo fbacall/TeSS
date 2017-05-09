@@ -1,3 +1,2 @@
 class ScientificTopicPolicy < ApplicationPolicy
-
 end

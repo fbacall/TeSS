@@ -1,5 +1,4 @@
 class EdamController < ApplicationController
-
   def terms
     @terms = EDAM::Ontology.instance.all_topics + EDAM::Ontology.instance.all_operations
     if params[:filter]
@@ -26,5 +25,4 @@ class EdamController < ApplicationController
 
     render 'index', format: :json
   end
-
 end

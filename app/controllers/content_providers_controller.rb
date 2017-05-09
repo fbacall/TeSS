@@ -4,13 +4,12 @@ class ContentProvidersController < ApplicationController
 
   include SearchableIndex
 
-  def index
-  end
+  def index; end
 
   def show
     respond_to do |format|
       format.html
-      format.json { render :json => @content_provider }
+      format.json { render json: @content_provider }
     end
   end
 
@@ -43,8 +42,8 @@ class ContentProvidersController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :nothing => true, :status => 200, :content_type => 'text/html' }
-        format.json { render json: {}, :status => 200, :content_type => 'application/json' }
+        format.html { render nothing: true, status: 200, content_type: 'text/html' }
+        format.json { render json: {}, status: 200, content_type: 'application/json' }
       end
     end
   end
@@ -91,6 +90,7 @@ class ContentProvidersController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_content_provider
     @content_provider = ContentProvider.friendly.find(params[:id])
@@ -99,15 +99,15 @@ class ContentProvidersController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def content_provider_params
     # For calls to create/update content_provider - get the node id from node name, if node id is not passed
-    if (params[:content_provider][:node_id].blank? && !params[:content_provider][:node_name].blank?)
+    if params[:content_provider][:node_id].blank? && !params[:content_provider][:node_name].blank?
       node = Node.find_by_name(params[:content_provider][:node_name])
-      params[:content_provider].merge!({:node_id => node.id}) unless node.blank?
+      params[:content_provider][:node_id] = node.id unless node.blank?
     end
     params[:content_provider].delete :node_name
 
     permitted = [:title, :url, :image, :image_url, :description, :id, :content_provider_type, :node_id,
-        {:keywords => []}, :remote_updated_date, :remote_created_date,
-        :local_updated_date, :remote_updated_date, :node_name, :user_id]
+                 { keywords: [] }, :remote_updated_date, :remote_created_date,
+                 :local_updated_date, :remote_updated_date, :node_name, :user_id]
 
     permitted.delete(:user_id) unless current_user && current_user.is_admin?
 

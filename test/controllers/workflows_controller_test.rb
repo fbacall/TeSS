@@ -7,13 +7,13 @@ class WorkflowsControllerTest < ActionController::TestCase
     @workflow = workflows(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get :index
     assert_response :success
     assert_not_empty assigns(:workflows)
   end
 
-  test "should get index as json" do
+  test 'should get index as json' do
     @workflow.scientific_topic_names = ['Chromosomes']
     @workflow.save!
 
@@ -22,32 +22,32 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_not_empty assigns(:workflows)
   end
 
-  test "should get new" do
+  test 'should get new' do
     sign_in users(:admin)
 
     get :new
     assert_response :success
   end
 
-  test "should create workflow" do
+  test 'should create workflow' do
     sign_in users(:admin)
 
     assert_difference('Workflow.count') do
       post :create, workflow: { description: @workflow.description, title: @workflow.title,
-          workflow_content: @workflow.workflow_content }
+                                workflow_content: @workflow.workflow_content }
     end
 
     assert_redirected_to workflow_path(assigns(:workflow))
   end
 
-  test "should show workflow" do
+  test 'should show workflow' do
     get :show, id: @workflow
     assert_response :success
     assert_includes response.headers.keys, 'X-Frame-Options', 'X-Frame-Options header should be present in all actions except `embed`'
     assert assigns(:workflow)
   end
 
-  test "should show workflow as json" do
+  test 'should show workflow as json' do
     @workflow.scientific_topic_names = ['Chromosomes']
     @workflow.save!
 
@@ -56,27 +56,27 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert assigns(:workflow)
   end
 
-  test "should show embedded workflow" do
+  test 'should show embedded workflow' do
     get :embed, id: @workflow
     assert_response :success
     assert_select '.embedded-container', count: 1
     assert_not_includes response.headers.keys, 'X-Frame-Options', 'X-Frame-Options header should be removed to allow embedding in iframes'
   end
 
-  test "should not show embedded private workflow" do
+  test 'should not show embedded private workflow' do
     get :embed, id: workflows(:private_workflow)
     assert_response :forbidden
     assert_select '.embedded-container', count: 0
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     sign_in users(:admin)
 
     get :edit, id: @workflow
     assert_response :success
   end
 
-  test "should update workflow" do
+  test 'should update workflow' do
     sign_in users(:admin)
 
     patch :update, id: @workflow, workflow: { description: @workflow.description, title: 'hello',
@@ -85,7 +85,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_equal 'hello', assigns(:workflow).title
   end
 
-  test "should destroy workflow" do
+  test 'should destroy workflow' do
     sign_in users(:admin)
 
     assert_difference('Workflow.count', -1) do
@@ -161,5 +161,4 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_includes assigns(:workflows).map(&:id), workflows(:collaborated_workflow).id
     assert_includes assigns(:workflows).map(&:id), workflows(:private_workflow).id
   end
-
 end

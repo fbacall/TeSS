@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class EventTest < ActiveSupport::TestCase
-
   test 'can get associated nodes for event' do
     e = events(:scraper_user_event)
 
@@ -59,12 +58,11 @@ class EventTest < ActiveSupport::TestCase
   test 'set default start time' do
     e = events(:event_with_no_start)
     assert_nil e.start
-    e.save()
+    e.save
     assert_nil e.start
     e.start = '2016-11-22'
-    e.save()
+    e.save
     assert_equal e.start.hour, 9
-
   end
 
   test 'set default end time' do
@@ -72,7 +70,7 @@ class EventTest < ActiveSupport::TestCase
     e = events(:event_with_no_end)
     assert_equal e.start, time
     assert_nil e.end
-    e.save()
+    e.save
     assert_equal e.start, time + 9.hours
     assert_equal e.end, time + 17.hours
   end
@@ -82,7 +80,7 @@ class EventTest < ActiveSupport::TestCase
     e = events(:online_event_with_no_end)
     assert_equal e.start, time
     assert_nil e.end
-    e.save()
+    e.save
     assert_equal e.start, time
     assert_equal e.end, time + 1.hours
   end
@@ -109,7 +107,6 @@ class EventTest < ActiveSupport::TestCase
     assert_equal content_providers(:project_provider), e.content_provider
   end
 
-
   test 'equal precedence content provider does overwrite' do
     e = events(:portal_event)
 
@@ -133,12 +130,12 @@ class EventTest < ActiveSupport::TestCase
 
     # Via names
     assert_difference('ScientificTopicLink.count', 2) do
-      e.scientific_topic_names = ['Proteins', 'Chromosomes', 'Proteins', 'Chromosomes']
+      e.scientific_topic_names = %w(Proteins Chromosomes Proteins Chromosomes)
       e.save!
     end
 
     assert_no_difference('ScientificTopicLink.count') do
-      e.scientific_topic_names = ['Proteins', 'Chromosomes']
+      e.scientific_topic_names = %w(Proteins Chromosomes)
       e.save!
     end
 
@@ -160,11 +157,8 @@ class EventTest < ActiveSupport::TestCase
 
     # Both
     assert_no_difference('ScientificTopicLink.count') do
-      e.scientific_topic_names = ['Proteins', 'Chromosomes']
+      e.scientific_topic_names = %w(Proteins Chromosomes)
       e.save!
     end
   end
-
 end
-
-

@@ -1,5 +1,4 @@
 class ControlledVocabularyValidator < ActiveModel::EachValidator
-
   def validate_each(record, attribute, value)
     if value.respond_to?(:each)
       bad_terms = value.reject { |v| options[:dictionary].lookup(v) }
@@ -8,9 +7,8 @@ class ControlledVocabularyValidator < ActiveModel::EachValidator
       end
     else
       unless options[:dictionary].lookup(value)
-        record.errors[attribute] << (options[:message] || "must be a controlled vocabulary term")
+        record.errors[attribute] << (options[:message] || 'must be a controlled vocabulary term')
       end
     end
   end
-
 end

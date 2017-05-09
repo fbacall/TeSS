@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class EdamOntologyTest < ActiveSupport::TestCase
-
   test 'should lookup term' do
     term = EDAM::Ontology.instance.lookup('http://edamontology.org/topic_0078')
 
@@ -42,5 +41,4 @@ class EdamOntologyTest < ActiveSupport::TestCase
       assert_match /.+topic_/, topic.uri
     end
   end
-
 end

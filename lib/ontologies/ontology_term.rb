@@ -1,5 +1,4 @@
 class OntologyTerm
-
   attr_reader :ontology, :data, :uri
 
   def initialize(ontology, statements)
@@ -14,7 +13,6 @@ class OntologyTerm
   end
 
   def ==(other)
-    self.uri == other.uri
+    uri == other.uri
   end
-
 end

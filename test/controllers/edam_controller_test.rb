@@ -56,5 +56,4 @@ class EdamControllerTest < ActionController::TestCase
     assert_equal 16, res.length
     assert_includes res.map { |t| t['preferred_label'] }, 'Database management'
   end
-
 end

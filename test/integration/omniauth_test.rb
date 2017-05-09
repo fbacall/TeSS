@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class OmniauthTest < ActionDispatch::IntegrationTest
-
   setup do
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:elixir_aai] = nil
@@ -11,23 +10,22 @@ class OmniauthTest < ActionDispatch::IntegrationTest
 
   test 'ELIXIR AAI authentication redirects new users to edit profile page' do
     OmniAuth.config.mock_auth[:elixir_aai] = OmniAuth::AuthHash.new(
-        {
-            provider: 'elixir_aai',
-            uid: '0123456789abcdcef',
-            info: {
-                email: 'aai@example.com',
-                nickname: 'aai_user',
-                first_name: 'AAI',
-                last_name: 'User'
-            }
-        })
+      provider: 'elixir_aai',
+      uid: '0123456789abcdcef',
+      info: {
+        email: 'aai@example.com',
+        nickname: 'aai_user',
+        first_name: 'AAI',
+        last_name: 'User'
+      }
+    )
 
     get '/users/auth/elixir_aai'
 
     follow_redirect! # OmniAuth redirect
     follow_redirect! # CallbacksController edit profile redirect
 
-    assert_equal "/users/aai_user/edit", path
+    assert_equal '/users/aai_user/edit', path
     assert_select '.user-options > a:first', 'aai_user'
     assert_select '#user_profile_attributes_firstname[value=?]', 'AAI'
     assert_select '#user_profile_attributes_surname[value=?]', 'User'
@@ -36,14 +34,13 @@ class OmniauthTest < ActionDispatch::IntegrationTest
   test 'ELIXIR AAI authentication redirects existing users to home page' do
     user = users(:existing_aai_user)
     OmniAuth.config.mock_auth[:elixir_aai] = OmniAuth::AuthHash.new(
-        {
-            provider: 'elixir_aai',
-            uid: user.uid,
-            info: {
-                email: user.email,
-                nickname: user.username,
-            }
-        })
+      provider: 'elixir_aai',
+      uid: user.uid,
+      info: {
+        email: user.email,
+        nickname: user.username
+      }
+    )
 
     get '/users/auth/elixir_aai'
 
@@ -58,16 +55,15 @@ class OmniauthTest < ActionDispatch::IntegrationTest
     existing_user = users(:regular_user)
 
     OmniAuth.config.mock_auth[:elixir_aai] = OmniAuth::AuthHash.new(
-        {
-            provider: 'elixir_aai',
-            uid: '0123456789abcdcef',
-            info: {
-                email: 'aai@example.com',
-                nickname: existing_user.username,
-                first_name: 'AAI',
-                last_name: 'User'
-            }
-        })
+      provider: 'elixir_aai',
+      uid: '0123456789abcdcef',
+      info: {
+        email: 'aai@example.com',
+        nickname: existing_user.username,
+        first_name: 'AAI',
+        last_name: 'User'
+      }
+    )
 
     get '/users/auth/elixir_aai'
 
@@ -89,14 +85,13 @@ class OmniauthTest < ActionDispatch::IntegrationTest
     old_password = user.encrypted_password
 
     OmniAuth.config.mock_auth[:elixir_aai] = OmniAuth::AuthHash.new(
-        {
-            provider: 'elixir_aai',
-            uid: '9876',
-            info: {
-                email: user.email,
-                nickname: 'something-different',
-            }
-        })
+      provider: 'elixir_aai',
+      uid: '9876',
+      info: {
+        email: user.email,
+        nickname: 'something-different'
+      }
+    )
 
     get '/users/auth/elixir_aai'
 
@@ -113,6 +108,4 @@ class OmniauthTest < ActionDispatch::IntegrationTest
     assert_not_equal 'something-different', user.username, 'Username should have been preserved!'
     assert_equal old_password, user.encrypted_password, 'Password should have been preserved!'
   end
-
-
 end

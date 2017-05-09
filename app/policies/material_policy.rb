@@ -1,3 +1,2 @@
 class MaterialPolicy < ScrapedResourcePolicy
-
 end

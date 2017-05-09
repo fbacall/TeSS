@@ -4,7 +4,7 @@ class EditSuggestionWorker
   # TODO: Should a random time delay go in here such that the chastisement of
   # TODO: BioPortal is somewhat mimimised?
   def perform(arg_array)
-    suggestible_id,suggestible_type = arg_array
+    suggestible_id, suggestible_type = arg_array
     logger.debug "ID: #{suggestible_id}"
     logger.debug "TYPE: #{suggestible_type}"
     # Run Sidekiq task to call the BioPortal annotator
@@ -17,16 +17,16 @@ class EditSuggestionWorker
     # Use long description if available, otherwise short.
     desc = nil
     case suggestible_type
-      when 'Material'
-        if suggestible.long_description
-          desc = suggestible.long_description
-        else
-          desc = suggestible.short_description
-        end
-      when 'Event'
-        desc = suggestible.description
-      when 'Workflow'
-        desc = suggestible.description
+    when 'Material'
+      desc = if suggestible.long_description
+               suggestible.long_description
+             else
+               suggestible.short_description
+             end
+    when 'Event'
+      desc = suggestible.description
+    when 'Workflow'
+      desc = suggestible.description
     end
 
     if desc.blank?
@@ -40,12 +40,12 @@ class EditSuggestionWorker
     # See String#encode documentation
 
     encoding_options = {
-        :invalid           => :replace,
-        :undef             => :replace,
-        :replace           => '',
-        :universal_newline => true
+      invalid: :replace,
+      undef: :replace,
+      replace: '',
+      universal_newline: true
     }
-    clean_desc = desc.encode(Encoding.find('ASCII'), encoding_options).gsub(/[\n#]/,'')
+    clean_desc = desc.encode(Encoding.find('ASCII'), encoding_options).gsub(/[\n#]/, '')
 
     api_key = Rails.application.secrets.bioportal_api_key
     url = "http://data.bioontology.org/annotator?include=prefLabel&text=#{clean_desc}&ontologies=EDAM&longest_only=false&exclude_numbers=false&whole_word_only=true&exclude_synonyms=false&apikey=#{api_key}"
@@ -64,38 +64,34 @@ class EditSuggestionWorker
       else
         data.each do |entry|
           id = entry['annotatedClass']['@id']
-          if id.include? 'http://edamontology.org/topic_'
-            ids << entry['annotatedClass']['@id']
-            #else
-            #logger.info("Suggestible #{suggestible.inspect} matches entry #{id}.")
-          end
+          next unless id.include? 'http://edamontology.org/topic_'
+          ids << entry['annotatedClass']['@id']
+          # else
+          # logger.info("Suggestible #{suggestible.inspect} matches entry #{id}.")
         end
       end
     rescue => exception
       logger.error("Suggestible #{suggestible.inspect} threw an exception when checking BioPortal: #{exception}\nTrace: \n\t#{exception.backtrace.join("\n\t")}\n\nBioPortal response (#{response.code}):\n#{response.body}")
     end
 
-
     # Create some topics and an edit_suggestion if some annotations were returned
-    #logger.info("ANNOTATION: #{annotations}")
+    # logger.info("ANNOTATION: #{annotations}")
     if ids.any?
       topics = []
       ids.each do |id|
         topic = EDAM::Ontology.instance.lookup(id)
-        if topic
-          topics << topic
-        end
+        topics << topic if topic
       end
-      #logger.info("TOPIC: #{topics}")
+      # logger.info("TOPIC: #{topics}")
       if topics
-        suggestion = EditSuggestion.new(:suggestible_type => suggestible_type, :suggestible_id => suggestible_id)
+        suggestion = EditSuggestion.new(suggestible_type: suggestible_type, suggestible_id: suggestible_id)
         topics.each do |x|
-          #logger.info("Added topic #{x} to #{suggestible.inspect}")
+          # logger.info("Added topic #{x} to #{suggestible.inspect}")
           suggestion.scientific_topic_links.build(term_uri: x.uri)
         end
         if suggestion.scientific_topics.any?
           suggestion.save
-          #logger.info("Suggestion created: #{suggestion.inspect}")
+          # logger.info("Suggestion created: #{suggestion.inspect}")
         else
           logger.error("Suggestion has no topics: #{suggestion.inspect}")
         end

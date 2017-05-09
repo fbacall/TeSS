@@ -8,29 +8,29 @@ module BreadCrumbs
 
   # Make sure this is called after the @resource is set!
   def set_breadcrumbs
-    #Home
+    # Home
     add_breadcrumb 'Home', root_path
 
-    #Index
+    # Index
     add_index_breadcrumb(controller_name)
 
     if params[:id]
       resource = eval("@#{controller_name.singularize}") || guess_resource
 
-      add_show_breadcrumb resource if (resource && resource.respond_to?(:new_record?) && !resource.new_record?)
+      add_show_breadcrumb resource if resource && resource.respond_to?(:new_record?) && !resource.new_record?
 
       add_breadcrumb action_name.capitalize.humanize, url_for(resource) unless action_name == 'show'
     elsif action_name != 'index'
-      add_breadcrumb action_name.capitalize.humanize, url_for(:controller => controller_name, :action => action_name)
+      add_breadcrumb action_name.capitalize.humanize, url_for(controller: controller_name, action: action_name)
     end
   end
 
-  def add_index_breadcrumb controller_name, breadcrumb_name = nil
+  def add_index_breadcrumb(controller_name, breadcrumb_name = nil)
     breadcrumb_name ||= controller_name.singularize.humanize.pluralize
-    add_breadcrumb breadcrumb_name, url_for(:controller => controller_name, :action => 'index')
+    add_breadcrumb breadcrumb_name, url_for(controller: controller_name, action: 'index')
   end
 
-  def add_show_breadcrumb resource, breadcrumb_name = nil
+  def add_show_breadcrumb(resource, breadcrumb_name = nil)
     breadcrumb_name ||= if resource.respond_to?(:title)
                           resource.title
                         elsif resource.respond_to?(:name) && resource.name.present?

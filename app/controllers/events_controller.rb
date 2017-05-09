@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy, :update_packages]
   before_action :set_breadcrumbs
-  before_action :disable_pagination, only: :index, if: lambda { |controller| controller.request.format.ics? or controller.request.format.csv? }
+  before_action :disable_pagination, only: :index, if: ->(controller) { controller.request.format.ics? || controller.request.format.csv? }
 
   include SearchableIndex
   include ActionView::Helpers::TextHelper
@@ -45,9 +45,7 @@ class EventsController < ApplicationController
   def check_exists
     given_event = Event.new(event_params)
     @event = nil
-    if given_event.url.present?
-      @event = Event.find_by_url(given_event.url)
-    end
+    @event = Event.find_by_url(given_event.url) if given_event.url.present?
 
     if given_event.content_provider_id.present? && given_event.title.present? && given_event.start.present?
       @event ||= Event.where(content_provider_id: given_event.content_provider_id, title: given_event.title, start: given_event.start).last
@@ -60,11 +58,10 @@ class EventsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :nothing => true, :status => 200, :content_type => 'text/html' }
-        format.json { render json: {}, :status => 200, :content_type => 'application/json' }
+        format.html { render nothing: true, status: 200, content_type: 'text/html' }
+        format.json { render json: {}, status: 200, content_type: 'application/json' }
       end
     end
-
   end
 
   # POST /events
@@ -78,7 +75,7 @@ class EventsController < ApplicationController
       if @event.save
         @event.create_activity :create, owner: current_user
         look_for_topics(@event)
-        #current_user.events << @event
+        # current_user.events << @event
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
@@ -97,9 +94,7 @@ class EventsController < ApplicationController
         @event.create_activity(:update, owner: current_user) if @event.log_update_activity?
         # TODO: Consider whether this is proper behaviour or whether a user should explicitly delete this
         # TODO: suggestion, somehow.
-        if @event.edit_suggestion
-          @event.edit_suggestion.delete
-        end
+        @event.edit_suggestion.delete if @event.edit_suggestion
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else
@@ -127,14 +122,14 @@ class EventsController < ApplicationController
     # Go through each selected package
     # and update its resources to include this one.
     # Go through each other package
-    packages = params[:event][:package_ids].select{|p| !p.blank?}
-    packages = packages.collect{|package| Package.find_by_id(package)}
+    packages = params[:event][:package_ids].select { |p| !p.blank? }
+    packages = packages.collect { |package| Package.find_by_id(package) }
     packages_to_remove = @event.packages - packages
     packages.each do |package|
       package.update_resources_by_id(nil, (package.events + [@event.id]).uniq)
     end
     packages_to_remove.each do |package|
-      package.update_resources_by_id(nil, (package.events.collect{|x| x.id} - [@event.id]).uniq)
+      package.update_resources_by_id(nil, (package.events.collect(&:id) - [@event.id]).uniq)
     end
     flash[:notice] = "Event has been included in #{pluralize(packages.count, 'package')}"
     redirect_to @event
@@ -152,18 +147,17 @@ class EventsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def event_params
     params.require(:event).permit(:external_id, :title, :subtitle, :url, :organizer, :last_scraped,
-                                  :scraper_record, :description, {:scientific_topic_names => []}, {:event_types => []},
-                                  {:keywords => []}, :start, :end, :sponsor, :online, :for_profit, :venue,
+                                  :scraper_record, :description, { scientific_topic_names: [] }, { event_types: [] },
+                                  { keywords: [] }, :start, :end, :sponsor, :online, :for_profit, :venue,
                                   :city, :county, :country, :postcode, :latitude, :longitude, :timezone,
-                                  :content_provider_id, {:package_ids => []}, {:node_ids => []}, {:node_names => []},
-                                  {:target_audience => []}, {:eligibility => []},
-                                  {:host_institutions => []}, :capacity, :contact,
+                                  :content_provider_id, { package_ids: [] }, { node_ids: [] }, { node_names: [] },
+                                  { target_audience: [] }, { eligibility: [] },
+                                  { host_institutions: [] }, :capacity, :contact,
                                   external_resources_attributes: [:id, :url, :title, :_destroy], material_ids: [],
                                   locked_fields: [])
   end
 
   def disable_pagination
-    params[:per_page] = 2 ** 10
+    params[:per_page] = 2**10
   end
-
 end

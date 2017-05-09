@@ -1,3 +1,2 @@
 class EventPolicy < ScrapedResourcePolicy
-
 end

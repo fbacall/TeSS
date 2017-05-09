@@ -1,3 +1,5 @@
+var cy;
+
 var MarkdownIt = window.markdownit();
 
 var Workflows = {
@@ -246,22 +248,22 @@ var Workflows = {
                     e.cyTarget.data('html_description', MarkdownIt.render(e.cyTarget.data('description')));
                 }
 
-                var resources = e.cyTarget.data('associatedResources')
+                var resources = e.cyTarget.data('associatedResources');
                 if (resources && resources.length > 0){
                     for(var i = 0; i < resources.length; i++) {
-                        var resource = resources[i]
-                        var uri = URI.parse(resource.url)
+                        var resource = resources[i];
+                        var uri = URI.parse(resource.url);
                         if (uri.hostname == 'bio.tools') {
-                            var id = uri.path.split('/')[2]
-                            Biotools.displayToolInfo(id)
-                            resource.id =id
+                            var id = uri.path.split('/')[2];
+                            Biotools.displayToolInfo(id);
+                            resource.id = id;
                         }
                     }
                 }
                 e.cyTarget.data('associatedResources', resources)
 
                 $('#workflow-diagram-sidebar-title').html(e.cyTarget.data('name') || '<span class="muted">Untitled</span>');
-                $('#workflow-diagram-sidebar-desc').html(HandlebarsTemplates['workflows/sidebar_content'](e.cyTarget.data()))
+                $('#workflow-diagram-sidebar-desc').html(HandlebarsTemplates['workflows/sidebar_content'](e.cyTarget.data()));
 
                 Workflows.storeLastSelection();
 
@@ -394,7 +396,7 @@ var Workflows = {
                 // Detect if URL is internal, and make it relative
                 var base = window.location.toString().split('/workflows')[0];
                 if (resource.url.indexOf(base) !== -1) {
-                    resource.url = resource.url.substr(base.length)
+                    resource.url = resource.url.substr(base.length);
                 }
 
                 if (resource.url && resource.title) {
@@ -465,7 +467,7 @@ $(document).ready(function () {
     var hideChildNodes = cytoscapeElement.data('hideChildNodes');
 
     if (wfJsonElement.length && cytoscapeElement.length) {
-        var cy = window.cy = cytoscape({
+        cy = window.cy = cytoscape({
             container: cytoscapeElement[0],
             elements: JSON.parse(wfJsonElement.html()),
             layout: {
@@ -479,10 +481,10 @@ $(document).ready(function () {
                         'shape': 'roundrectangle',
                         'content': 'data(name)',
                         'background-color': function (ele) {
-                            return (typeof ele.data('color') === 'undefined') ? "#f47d20" : ele.data('color')
+                            return (typeof ele.data('color') === 'undefined') ? "#f47d20" : ele.data('color');
                         },
                         'color': function (ele) {
-                            return (typeof ele.data('font_color') === 'undefined') ? "#000000" : ele.data('font_color')
+                            return (typeof ele.data('font_color') === 'undefined') ? "#000000" : ele.data('font_color');
                         },
                         'background-opacity': 0.8,
                         'text-valign': 'center',

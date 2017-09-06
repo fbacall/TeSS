@@ -88,7 +88,6 @@ gem 'redcarpet', '~> 3.4.0'
 
 # Gem for paginating search results
 gem 'will_paginate', '~> 3.1.5'
-gem 'will_paginate-bootstrap', '~> 1.0.1'
 
 # Gem for managing the app version
 gem 'app_version'

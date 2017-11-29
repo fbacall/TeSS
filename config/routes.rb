@@ -107,6 +107,7 @@ Rails.application.routes.draw do
 
   get 'curate/topic_suggestions' => 'curator#topic_suggestions'
   get 'curate' => 'curator#index'
+  post 'suggest/:type/:id' => 'edit_suggestions#create'
 
 
   require 'sidekiq/web'

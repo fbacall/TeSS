@@ -110,9 +110,23 @@ class Material < ActiveRecord::Base
 
     if given_material.content_provider.present? && given_material.title.present?
       material ||= self.where(content_provider_id: given_material.content_provider_id,
-                                   title: given_material.title).last
+                              title: given_material.title).last
     end
 
     material
   end
+
+  def self.suggested_fields
+    %i[title url short_description long_description doi keywords licence difficulty_level
+       contributors authors target_audience]
+  end
+
+  # Return true if any of the fields below are null or empty so that a "suggest edits" button may be shown.
+  def missing_fields?
+    if Material.suggested_fields.any? { |e| send(e).blank? }
+      return true
+    end
+    false
+  end
+
 end

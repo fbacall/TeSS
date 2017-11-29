@@ -1,0 +1,26 @@
+<div id="suggest_edits_section">
+
+  <div id="suggest_edits_form_area" style="display: none;">
+    <%= form_tag("/suggest/#{material.class.name}/#{material.id}", authenticity_token: true) -%>
+      <% Material.suggested_fields.each do |field| -%>
+        <% if material.send(field).blank? -%>
+            <p>
+            <label for="<%= field -%>"><%= field.to_s.titlecase -%></label>
+            <input class="form-control" id="edit_<%= field -%>"
+                 placeholder="Add a new <%= field.to_s.titlecase -%>..." type="text">
+            </p>
+        <% end -%>
+      <% end -%>
+
+      <input name="commit" value="Submit" class="btn btn-primary" type="submit">
+      <btn class="btn btn-info" id="close_suggest_edits" onClick="hideSEarea()">Hide</btn>
+    </form>
+
+  </div>
+
+  <% if material.missing_fields? -%>
+    <btn class="btn btn-info" id="open_suggest_edits" onClick="showSEarea()">
+      Suggest Edits
+    </btn>
+  <% end -%>
+</div>

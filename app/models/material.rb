@@ -117,13 +117,13 @@ class Material < ActiveRecord::Base
   end
 
   def self.suggested_fields
-    %i[title url short_description long_description doi keywords licence difficulty_level
+    %i[title url short_description long_description doi licence difficulty_level
        contributors authors target_audience]
   end
 
   # Return true if any of the fields below are null or empty so that a "suggest edits" button may be shown.
   def missing_fields?
-    if Material.suggested_fields.any? { |e| send(e).blank? }
+    if Material.suggested_fields.any? { |e| send(e).blank? || send(e) == 'notspecified' }
       return true
     end
     false

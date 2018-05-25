@@ -7,7 +7,6 @@ class Workflow < ActiveRecord::Base
   include HasLicence
   include Searchable
 
-
   extend FriendlyId
   friendly_id :title, use: :slugged
 
@@ -46,6 +45,9 @@ class Workflow < ActiveRecord::Base
       integer :user_id
       boolean :public
       integer :collaborator_ids, multiple: true
+      string :type do
+        self.type ? self.type.titleize : 'Legacy Workflow'
+      end
     end
     # :nocov:
   end
@@ -64,7 +66,15 @@ class Workflow < ActiveRecord::Base
   after_update :log_diagram_modification
 
   def self.facet_fields
-    %w(scientific_topics target_audience keywords licence difficulty_level authors contributors)
+    %w(type scientific_topics target_audience keywords licence difficulty_level authors contributors)
+  end
+
+  def self.valid_types
+    %(ConceptMap EducationalResource)
+  end
+
+  def self.policy_class
+    WorkflowPolicy
   end
 
   def new_fork(user)

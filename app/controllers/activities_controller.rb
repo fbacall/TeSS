@@ -1,7 +1,7 @@
 class ActivitiesController < ApplicationController
 
   before_action :set_resource, only: [:index]
-  before_action :set_breadcrumbs
+  before_action :set_breadcrumbs, unless: -> { request.xhr? }
 
   MODELS = %w[content_provider material package event node workflow].freeze
 

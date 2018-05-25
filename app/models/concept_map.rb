@@ -1,0 +1,3 @@
+class ConceptMap < Workflow
+
+end

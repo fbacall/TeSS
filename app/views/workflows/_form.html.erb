@@ -10,6 +10,8 @@
 
         <%= f.input :title %>
 
+        <%= f.hidden_field :type %>
+
         <div class="form-group">
           <%= f.label :description %>
           <%= f.markdown_area :description, :class => 'form-control', :rows => '5' %>
@@ -65,7 +67,7 @@
         </div>
 
         <h3>Diagram</h3>
-        <%= f.hidden_field :workflow_content  %>
+        <%= f.hidden_field :workflow_content, id: 'workflow_content'  %>
 
         <% content_for :sidebar_title do %>
             <span class="muted">Nothing selected</span>

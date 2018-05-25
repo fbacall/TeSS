@@ -31,7 +31,7 @@ module BreadCrumbs
 
   def add_index_breadcrumb(con_name, breadcrumb_name = nil)
     breadcrumb_name ||= con_name.singularize.humanize.pluralize
-    add_breadcrumb breadcrumb_name, url_for(controller: "/#{con_name}", action: 'index')
+    add_breadcrumb breadcrumb_name, polymorphic_path(con_name)
   end
 
   def add_show_breadcrumb resource, breadcrumb_name = nil

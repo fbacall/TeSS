@@ -32,7 +32,7 @@ class WorkflowsController < ApplicationController
   # GET /workflows/new
   def new
     authorize Workflow
-    @workflow = Workflow.new
+    @workflow = Workflow.new(type: workflow_type)
     render layout: 'workflows'
   end
 
@@ -110,13 +110,22 @@ class WorkflowsController < ApplicationController
     @workflow = Workflow.friendly.find(params[:id])
   end
 
+  def workflow_type
+    if params[:type] && Workflow.valid_types.include?(params[:type])
+      params[:type]
+    else
+      nil
+    end
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def workflow_params
-    params.require(:workflow).permit(:title, :description, :user_id, :workflow_content, :doi,
-                                     :remote_created_date,  :remote_updated_date, { keywords: [] },
-                                     { scientific_topic_names: [] }, { scientific_topic_uris: [] }, :licence,
-                                     :difficulty_level, { contributors: [] }, { authors: [] }, { target_audience: [] },
-                                     :hide_child_nodes, :public)
+    params.require((workflow_type || 'Workflow').underscore.to_sym).permit(
+        :title, :description, :user_id, :workflow_content, :doi,
+        :remote_created_date,  :remote_updated_date, { keywords: [] },
+        { scientific_topic_names: [] }, { scientific_topic_uris: [] }, :licence,
+        :difficulty_level, { contributors: [] }, { authors: [] }, { target_audience: [] },
+        :hide_child_nodes, :public, :type)
   end
 
 end

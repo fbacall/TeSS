@@ -1,0 +1,3 @@
+class EducationalResource < Workflow
+
+end

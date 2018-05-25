@@ -589,7 +589,7 @@ $(document).ready(function () {
 
             // Update JSON in form
             $('.workflow-form-submit').click(function () {
-                $('#workflow_workflow_content').val(JSON.stringify(cy.json()['elements']));
+                $('#workflow_content').val(JSON.stringify(cy.json()['elements']));
                 Workflows.formSubmitted = true;
 
                 return true;

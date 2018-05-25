@@ -326,7 +326,7 @@ class EventsControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Events/, :count => 1 do
-        assert_select 'a[href=?]', events_url, :count => 1
+        assert_select 'a[href=?]', events_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /#{@event.title}/, :count => 1
     end
@@ -339,10 +339,10 @@ class EventsControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Events/, :count => 1 do
-        assert_select 'a[href=?]', events_url, :count => 1
+        assert_select 'a[href=?]', events_path, :count => 1
       end
       assert_select 'li', :text => /#{@event.title}/, :count => 1 do
-        assert_select 'a[href=?]', event_url(@event), :count => 1
+        assert_select 'a[href=?]', event_path(@event), :count => 1
       end
       assert_select 'li[class=active]', :text => /Edit/, :count => 1
     end
@@ -355,7 +355,7 @@ class EventsControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Events/, :count => 1 do
-        assert_select 'a[href=?]', events_url, :count => 1
+        assert_select 'a[href=?]', events_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /New/, :count => 1
     end

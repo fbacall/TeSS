@@ -250,7 +250,7 @@ class ContentProvidersControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Content providers/, :count => 1 do
-        assert_select 'a[href=?]', content_providers_url, :count => 1
+        assert_select 'a[href=?]', content_providers_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /#{@content_provider.title}/, :count => 1
     end
@@ -263,10 +263,10 @@ class ContentProvidersControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Content providers/, :count => 1 do
-        assert_select 'a[href=?]', content_providers_url, :count => 1
+        assert_select 'a[href=?]', content_providers_path, :count => 1
       end
       assert_select 'li', :text => /#{@content_provider.title}/, :count => 1 do
-        assert_select 'a[href=?]', content_provider_url(@content_provider), :count => 1
+        assert_select 'a[href=?]', content_provider_path(@content_provider), :count => 1
       end
       assert_select 'li[class=active]', :text => /Edit/, :count => 1
     end
@@ -279,7 +279,7 @@ class ContentProvidersControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Content providers/, :count => 1 do
-        assert_select 'a[href=?]', content_providers_url, :count => 1
+        assert_select 'a[href=?]', content_providers_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /New/, :count => 1
     end

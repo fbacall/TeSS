@@ -163,7 +163,7 @@ class PackagesControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Packages/, :count => 1 do
-        assert_select 'a[href=?]', packages_url, :count => 1
+        assert_select 'a[href=?]', packages_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /#{@package.title}/, :count => 1
     end
@@ -176,10 +176,10 @@ class PackagesControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Packages/, :count => 1 do
-        assert_select 'a[href=?]', packages_url, :count => 1
+        assert_select 'a[href=?]', packages_path, :count => 1
       end
       assert_select 'li', :text => /#{@package.title}/, :count => 1 do
-        assert_select 'a[href=?]', package_url(@package), :count => 1
+        assert_select 'a[href=?]', package_path(@package), :count => 1
       end
       assert_select 'li[class=active]', :text => /Edit/, :count => 1
     end
@@ -192,7 +192,7 @@ class PackagesControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Packages/, :count => 1 do
-        assert_select 'a[href=?]', packages_url, :count => 1
+        assert_select 'a[href=?]', packages_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /New/, :count => 1
     end

@@ -15,9 +15,9 @@ module BreadCrumbs
 
       add_show_breadcrumb resource if (resource && resource.respond_to?(:new_record?) && !resource.new_record?)
 
-      add_breadcrumb action_name.capitalize.humanize, url_for(resource) unless action_name == 'show'
+      add_breadcrumb action_name.capitalize.humanize, polymorphic_path(resource) unless action_name == 'show'
     elsif action_name != 'index'
-      add_breadcrumb action_name.capitalize.humanize, url_for(:controller => controller_name, :action => action_name)
+      add_breadcrumb action_name.capitalize.humanize, url_for(controller: controller_name, action: action_name, only_path: true)
     end
   end
 
@@ -31,7 +31,7 @@ module BreadCrumbs
 
   def add_index_breadcrumb(con_name, breadcrumb_name = nil)
     breadcrumb_name ||= con_name.singularize.humanize.pluralize
-    add_breadcrumb breadcrumb_name, polymorphic_path(con_name)
+    add_breadcrumb breadcrumb_name, url_for(controller: "/#{con_name}", action: 'index', type: nil, only_path: true)
   end
 
   def add_show_breadcrumb resource, breadcrumb_name = nil
@@ -43,7 +43,7 @@ module BreadCrumbs
                           resource.id
                         end
 
-    add_breadcrumb breadcrumb_name, url_for(resource)
+    add_breadcrumb breadcrumb_name, polymorphic_path(resource)
   end
 
   def add_breadcrumb(name, url = '', options = {})

@@ -384,7 +384,7 @@ class MaterialsControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Materials/, :count => 1 do
-        assert_select 'a[href=?]', materials_url, :count => 1
+        assert_select 'a[href=?]', materials_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /#{@material.title}/, :count => 1
     end
@@ -397,10 +397,10 @@ class MaterialsControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Materials/, :count => 1 do
-        assert_select 'a[href=?]', materials_url, :count => 1
+        assert_select 'a[href=?]', materials_path, :count => 1
       end
       assert_select 'li', :text => /#{@material.title}/, :count => 1 do
-        assert_select 'a[href=?]', material_url(@material), :count => 1
+        assert_select 'a[href=?]', material_path(@material), :count => 1
       end
       assert_select 'li[class=active]', :text => /Edit/, :count => 1
     end
@@ -413,7 +413,7 @@ class MaterialsControllerTest < ActionController::TestCase
     assert_select 'div.breadcrumbs', :text => /Home/, :count => 1 do
       assert_select 'a[href=?]', root_path, :count => 1
       assert_select 'li', :text => /Materials/, :count => 1 do
-        assert_select 'a[href=?]', materials_url, :count => 1
+        assert_select 'a[href=?]', materials_path, :count => 1
       end
       assert_select 'li[class=active]', :text => /New/, :count => 1
     end

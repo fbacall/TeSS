@@ -110,6 +110,9 @@
           <li>
             <a data-toggle="tab" id="maptab" href="#map"><i class="fa fa-globe"></i> Map</a>
           </li>
+          <li>
+            <a data-toggle="tab" id="calendartab" href="#calendar"><i class="fa fa-globe"></i> Calendar</a>
+          </li>
         </ul>
 
         <div class="tab-content">
@@ -138,6 +141,11 @@
               For the complete list of events in TeSS, click the grid tab.</small>
             <div id="map-content">
               <%= render :partial => "events/partials/events_map", :locals => {:events => @events} %>
+            </div>
+          </div>
+          <div id="calendar" class="tab-pane fade">
+            <div id="calendar-content">
+              <%= render partial: "events/partials/events_calendar", locals: { events: @events} %>
             </div>
           </div>
         </div>

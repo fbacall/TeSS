@@ -12,7 +12,12 @@ Rails.application.routes.draw do
   get 'edam/operations' => 'edam#operations'
 
   #get 'static/home'
-  get 'about' => 'static#about', as: 'about'
+  get 'about' => 'about#tess', as: 'about'
+  get 'about/registering' => 'about#registering', as: 'registering_resources'
+  get 'about/developers' => 'about#developers', as: 'developers'
+  get 'about/us' => 'about#us', as: 'us'
+
+
   get 'privacy' => 'static#privacy', as: 'privacy'
 
   post 'materials/check_exists' => 'materials#check_exists'
@@ -50,9 +55,9 @@ Rails.application.routes.draw do
     end
     member do
       get 'redirect'
-      post 'add_topic'
+      post 'add_term'
       post 'add_data'
-      post 'reject_topic'
+      post 'reject_term'
       post 'reject_data'
       get 'report'
       patch 'report', to: 'events#update_report'
@@ -75,9 +80,9 @@ Rails.application.routes.draw do
 
   resources :materials, concerns: :activities do
     member do
-      post :reject_topic
+      post :reject_term
       post :reject_data
-      post :add_topic
+      post :add_term
       post :add_data
     end
     collection do
@@ -115,6 +120,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/sidekiq'
   end
 
+  get 'resolve/:prefix:type:id' => 'resolution#resolve', constraints: { prefix: /(.+\:)?/, type: /[a-zA-Z]/, id: /\d+/ }
 
 =begin
   authenticate :user do

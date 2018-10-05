@@ -46,9 +46,25 @@ body {
   bottom: 0;
   left: 0;
   background-color: #ddd;
+
+  .container {
+    padding: 0;
+  }
+
   .footer-logo {
     margin: 0 5px;
     img { height: 48px; }
+  }
+
+  .eu-notice {
+    padding-top: 10px;
+    overflow: auto;
+
+    img {
+      float: left;
+      margin: 0 8px;
+      height: 39px;
+    }
   }
 }
 
@@ -239,6 +255,7 @@ ul.unstyled {
 
 .nav-item {
   padding: 7px 20px;
+  width: 100%;
 }
 
 .nav-item > a {
@@ -359,10 +376,6 @@ ul.unstyled {
 .panel-heading .accordion-toggle.collapsed:after {
   /* symbol for "collapsed" panels */
   content: "\e114"; /* adjust as needed, taken from bootstrap.css */
-}
-
-.panel-body {
-  padding-bottom: 0px;
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -513,26 +526,40 @@ ul.featureblocks {
 }
 
 .searchbox {
-  width: 85%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
-  margin-bottom: 5px;
-  padding: 20px;
-  background-color: #efefef;
-  position: relative;
-  box-shadow: 0 0 5px #333;
-  -webkit-box-shadow: 0 0 5px #333;
-  -moz-box-shadow: 0 0 5px #333;
-  -webkit-border-radius: 3px !important;
-  -moz-border-radius: 3px !important;
-  border-radius: 3px !important;
   text-align: center;
-}
+  margin-top: 10px;
+  margin-bottom: 30px;
 
-.homepage #sb-search {
-  background-color: transparent;
-  padding: 0;
+  form {
+    padding-right: 10px;
+    background-color: #f8f8f8;
+    text-align: center;
+    line-height: 2;
+    font-size: large;
+    margin: auto;
+    max-width: 800px;
+
+    .searchbox-wrapper {
+      display: flex;
+    }
+
+    .searchbox-field {
+      border-width: 0;
+      border-style: solid;
+      border-color: #ccc;
+      background: transparent;
+      padding: 15px 15px 15px 25px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .searchbox-btn {
+      border: none;
+      background: transparent;
+      padding: 5px 15px;
+      flex-shrink: 0;
+    }
+  }
 }
 
 sup {
@@ -621,7 +648,7 @@ sup {
   padding: 0px 5px;
 }
 
-.dropdown-option-delete, a.delete-list-item, a.delete-collaboration {
+.dropdown-option-delete, a.delete-list-item, a.delete-collaboration, a.delete-internal-resource {
   vertical-align: middle;
   color: $brand-danger;
   font-weight: bold;
@@ -659,8 +686,11 @@ sup {
 }
 
 .latest_resource_description {
+  /*
   min-width: 500px;
   min-height: 20px;
+  */
+  word-wrap: break-word;
 }
 
 .pagination {
@@ -675,7 +705,7 @@ sup {
 
 .btn-elixir {
   @include button-variant(white, $elixir-orange, white);
-  background-image: url('elixir_white_small.png');
+  background-image: image-url('elixir_white_small.png');
   background-repeat: no-repeat;
   background-position: 7px 7px;
   padding-left: 32px;
@@ -689,12 +719,12 @@ div.legal-block {
 }
 
 input.loading {
-  background: url('ajax-loader.gif') no-repeat right center;
+  background: image-url('ajax-loader.gif') no-repeat right center;
 }
 
 .btn.loading {
   padding-right: 24px;
-  background: url('ajax-loader.gif') no-repeat right center;
+  background: image-url('ajax-loader.gif') no-repeat right center;
 }
 
 .url-wrap {
@@ -764,4 +794,165 @@ input[type=checkbox].field-lock + label:before, .field-lock-example-open {
       margin: 1em 0;
     }
   }
+}
+
+.video_frame{
+  padding: 20px 0;
+  width: 560px;
+  height: 345px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.include-where{
+  font-size: 160%;
+  text-align: center;
+  margin: 10px;
+}
+
+.include-where-graphic{
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.motivation_box{
+  margin: 20px;
+}
+
+.include-where-text{
+  text-align: center;
+}
+
+.widgets_guide {
+  width: 80%;
+}
+
+.about-icons{
+  font-size: 10em;
+  color: gray;
+}
+
+.about-block{
+  padding: 10px 30px;
+}
+
+.odd-about-block {
+    padding: 20px;
+    background-color: #ededed;
+    border-radius: 5px;
+  }
+
+
+.even-about-block {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.sub-about-block {
+    background-color: white;
+    padding: 12px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.about-resource {
+  padding: 0 50px;
+
+}
+.licence-title{
+  text-align: center;
+}
+
+.licence-logo{
+  font-size: 5em;
+  color: gray;
+}
+
+.about-resource-icon{
+  padding: 35px 10px;
+  text-align: center;
+}
+.register-condition{
+    font-size: medium;
+    text-align: center;
+}
+
+.register-condition-graphic{
+  text-align: center;
+  width: 150px;
+  margin: auto;
+  padding: 20px 0;
+}
+.struct_data_type_logo{
+  max-width: 100px;
+  padding: 20px 0;
+}
+.data-type-examples{
+  padding-top: 20px;
+}
+.open-access-box{
+  background-color: white;
+  border-radius: 10px;
+  margin: 0 20px;
+  padding: 15px 5px;
+}
+
+.open-access-licence{
+  //width: 250px;
+}
+
+.open-access-location{
+  //width: 250px;
+}
+
+
+
+/* all links */
+.about-page-menu .nav>li>a {
+  color: #616161;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* nested links */
+.about-page-menu .nav .nav>li>a {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 30px;
+  font-size: 12px;
+}
+
+.about-page-menu .nav>.active>a { background-color: #F0F0F0; }
+
+.user_processing_consent {
+  @include alert-variant($alert-info-bg, $alert-info-border, $alert-info-text);
+  padding: 0 10px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.quick-links{
+  width: 80%;
+  text-align: center;
+  margin-left: 10%;
+}
+
+.selected-tab{
+  color: inherit;
+  text-decoration: underline;
+}
+
+.term_suggestions .dropdown-backdrop {
+  display: none;
+}
+
+.funding-logo{
+  width: 100px;
+  margin: 15px;
 }

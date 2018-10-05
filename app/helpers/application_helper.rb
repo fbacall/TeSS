@@ -105,7 +105,7 @@ module ApplicationHelper
 
   def render_markdown(markdown_text, options = {}, renderer_options = {})
     if markdown_text
-      options.reverse_merge!(filter_html: true, tables: true)
+      options.reverse_merge!(filter_html: true, tables: true, autolink: true)
       renderer_options.reverse_merge!(hard_wrap: true, link_attributes: { target: '_blank' })
       Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(renderer_options), options).render(markdown_text).html_safe
     else
@@ -335,8 +335,16 @@ module ApplicationHelper
                                                                   label_field: options[:label_field] || :title })
     end
 
+    def internal_resource(name, options = {})
+      url = options[:url] || @template.polymorphic_path(name)
+      @template.render(partial: 'common/internal_resource', locals: { field_name: name, f: self, url: url,
+                                                                      template: options[:template],
+                                                                      id_field: options[:id_field] || :id,
+                                                                      label_field: options[:label_field] || :title })
+    end
+
     def multi_input(name, options = {})
-      suggestions = options[:suggestions] || Tess::AutocompleteManager.suggestions_array_for(name.to_s)
+      suggestions = options[:suggestions] || AutocompleteManager.suggestions_array_for(name.to_s)
       @template.render(partial: 'common/multiple_input', locals: { field_name: name, f: self, suggestions: suggestions,
                                                                    disabled: options[:disabled] })
     end
@@ -385,8 +393,8 @@ module ApplicationHelper
   end
 
   def people_suggestions
-    (Tess::AutocompleteManager.suggestions_array_for('contributors') +
-        Tess::AutocompleteManager.suggestions_array_for('authors')).uniq
+    (AutocompleteManager.suggestions_array_for('contributors') +
+        AutocompleteManager.suggestions_array_for('authors')).uniq
   end
 
   def star_button(resource)

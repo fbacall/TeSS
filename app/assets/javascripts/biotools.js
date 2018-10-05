@@ -63,7 +63,7 @@ var Biotools = {
                     'data-title="' + item.name + '" data-url="' + url + '"/>' +
                 '</h4>' +
                 '<p>' + types + '</p>' +
-                '<span>' + item.description + '</span>' +
+                '<span>' + truncateWithEllipses(item.description, 600) + '</span>' +
                     '<div class="external-links">' +
                         '<a class="btn btn-warning" target="_blank" href="' + Biotools.websiteBaseURL() + '/' + item.id +'">' +
                         'View ' + item.name + ' on bio.tools ' +
@@ -125,7 +125,7 @@ var Biotools = {
     }
 };
 
-$(document).ready(function () {
+document.addEventListener("turbolinks:load", function() {
     $('#next-tools-button').click(Biotools.nextPage);
     $('#tool_query').keyup(Biotools.search);
     $('#search_tools').click(Biotools.search);

@@ -12,6 +12,7 @@
       <div class="content_action">
         <%= link_to t('.back', :default => t("helpers.links.back")),
                     :back, :class => 'btn btn-info'  %>
+        <%= render partial: 'common/identifiers_dot_org_button', locals: { resource: @event } if TeSS::Config.identifiers_prefix %>
         <% if @event.start && @event.end %>
             <div class="btn-group">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -175,6 +176,13 @@
                   </p>
               <% end %>
 
+              <% unless @event.operations.empty? %>
+                  <p>
+                    <strong>Operations:</strong>
+                    <%= @event.operation_names.join(', ')%>
+                  </p>
+              <% end %>
+
               <% unless @event.target_audience.empty? %>
                   <strong>Target audience:</strong>
                   <ul>
@@ -195,7 +203,7 @@
                   <strong>Event type:</strong>
                   <ul>
                     <% @event.event_types.each do |t| %>
-                        <li><%= Tess::EventTypeDictionary.instance.lookup_value(t, 'title') %></li>
+                        <li><%= EventTypeDictionary.instance.lookup_value(t, 'title') %></li>
                     <% end %>
                   </ul>
               <% end %>
@@ -209,7 +217,7 @@
                   <strong>Eligibility:</strong>
                   <ul>
                     <% @event.eligibility.each do |e| %>
-                        <li><%= Tess::EligibilityDictionary.instance.lookup_value(e, 'title') %></li>
+                        <li><%= EligibilityDictionary.instance.lookup_value(e, 'title') %></li>
                     <% end %>
                   </ul>
               <% end %>
@@ -240,9 +248,8 @@
 
               <%= render partial: 'events/report' if policy(@event).view_report? %>
 
-              <% unless @event.edit_suggestion.nil? || (@event.edit_suggestion.scientific_topics.empty? &&
-                  !@event.edit_suggestion.data) || current_user.nil? || !policy(@event).update? %>
-                  <%= render partial: 'common/approve_topic_suggestions', locals: { suggestion: @event.edit_suggestion } %>
+              <% if policy(@event).update? && @event.edit_suggestion %>
+                  <%= render partial: 'common/approve_term_suggestions', locals: { suggestion: @event.edit_suggestion } %>
               <% end %>
 
             </div>

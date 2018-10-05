@@ -59,9 +59,12 @@
 
     <%= f.input :description, as: :markdown_area, input_html: { rows: '10' }, field_lock: true %>
 
-    <%= f.dropdown :event_types, options: Tess::EventTypeDictionary.instance.options_for_select, label: 'Event type' %>
+    <%= f.dropdown :event_types, options: EventTypeDictionary.instance.options_for_select, label: 'Event type' %>
 
     <%= f.autocompleter :scientific_topics, url: edam_topics_path, template: 'autocompleter/term',
+                        id_field: :uri, label_field: :preferred_label %>
+
+    <%= f.autocompleter :operations, url: edam_operations_path, template: 'autocompleter/term',
                         id_field: :uri, label_field: :preferred_label %>
 
     <%= f.multi_input :keywords %>
@@ -79,14 +82,18 @@
 
     <%= f.input :capacity, field_lock: true %>
 
-    <%= f.dropdown :eligibility, options: Tess::EligibilityDictionary.instance.options_for_select, label: 'Eligibility' %>
+    <%= f.dropdown :eligibility, options: EligibilityDictionary.instance.options_for_select, label: 'Eligibility' %>
 
     <div class="form-group">
       <%= f.label 'for_profit' %> <%= icon_for(:for_profit, :small) %><%= f.field_lock :for_profit %>
       <%= f.check_box :for_profit %>
     </div>
 
-    <%= f.autocompleter :materials %>
+    <%= f.internal_resource :materials %>
+
+    <div class="row">
+      <%= render partial: 'common/materials_suggestions', locals: { title_element: 'event_title' } %>
+    </div>
 
     <div class="form-group" id="external-resources">
       <%= f.label :external_resources %>
@@ -97,6 +104,10 @@
             <%= render partial: 'common/external_resource_form',
                        locals: { form_name: 'event', index: index, external_resource: external_resource } %>
         <% end %>
+      </div>
+
+      <div class="row">
+        <%= render :partial => 'common/fairsharing_suggestions', :locals => {:title_element => 'material_title'} %>
       </div>
 
       <div class="row">

@@ -2,20 +2,21 @@ require 'icalendar'
 require 'rails/html/sanitizer'
 require 'redis'
 
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   include PublicActivity::Common
   include LogParameterChanges
   include HasAssociatedNodes
-  include HasScientificTopics
   include HasExternalResources
   include HasContentProvider
   include LockableFields
   include Scrapable
   include Searchable
   include CurationQueue
+  include HasSuggestions
+  include IdentifiersDotOrg
 
   before_save :set_default_times, :check_country_name
-  before_save :geocoding_cache_lookup, if: :address_changed?
+  before_save :geocoding_cache_lookup, if: :address_will_change?
   after_save :enqueue_geocoding_worker, if: :address_changed?
 
   extend FriendlyId
@@ -40,7 +41,7 @@ class Event < ActiveRecord::Base
       string :country
       text :country
       string :event_types, :multiple => true do
-        Tess::EventTypeDictionary.instance.values_for_search(self.event_types)
+        EventTypeDictionary.instance.values_for_search(self.event_types)
       end
       string :keywords, :multiple => true
       time :start
@@ -62,6 +63,9 @@ class Event < ActiveRecord::Base
       end
       string :scientific_topics, :multiple => true do
         self.scientific_topic_names
+      end
+      string :operations, :multiple => true do
+        self.operation_names
       end
       string :target_audience, multiple: true
       boolean :online
@@ -94,10 +98,13 @@ class Event < ActiveRecord::Base
   has_many :materials, through: :event_materials
   has_many :widget_logs, as: :resource
 
+  has_ontology_terms(:scientific_topics, branch: OBO_EDAM.topics)
+  has_ontology_terms(:operations, branch: OBO_EDAM.operations)
+
   validates :title, :url, presence: true
   validates :capacity, numericality: true, allow_blank: true
-  validates :event_types, controlled_vocabulary: { dictionary: Tess::EventTypeDictionary.instance }
-  validates :eligibility, controlled_vocabulary: { dictionary: Tess::EligibilityDictionary.instance }
+  validates :event_types, controlled_vocabulary: { dictionary: EventTypeDictionary.instance }
+  validates :eligibility, controlled_vocabulary: { dictionary: EligibilityDictionary.instance }
   validates :latitude, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90, allow_nil: true }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180, allow_nil: true  }
   validate :allowed_url
@@ -173,7 +180,7 @@ class Event < ActiveRecord::Base
   end
 
   def self.facet_fields
-    %w( scientific_topics event_types online country tools organizer city sponsors target_audience keywords
+    %w( scientific_topics operations event_types online country tools organizer city sponsors target_audience keywords
         venue node content_provider user )
   end
 
@@ -314,8 +321,12 @@ class Event < ActiveRecord::Base
     ADDRESS_FIELDS.map { |field| self.send(field) }.reject(&:blank?).join(', ')
   end
 
+  def address_will_change?
+    ADDRESS_FIELDS.any? { |field| self.changes.keys.include?(field.to_s) }
+  end
+
   def address_changed?
-    ADDRESS_FIELDS.any? { |field| self.changed.include?(field.to_s) }
+    ADDRESS_FIELDS.any? { |field| self.previous_changes.keys.include?(field.to_s) }
   end
 
   # Check the Redis cache for coordinates
@@ -338,10 +349,12 @@ class Event < ActiveRecord::Base
   def geocoding_api_lookup
     location = self.address
 
-    result = Geocoder.search(location).first
+    #result = Geocoder.search(location).first
+    args = {postalcode: postcode, city: city, county: county, country: country, format: 'json'}
+    result = nominatim_lookup(args)
     if result
-      self.latitude = result.latitude
-      self.longitude = result.longitude
+      self.latitude = result[:lat]
+      self.longitude = result[:lon]
       begin
         redis = Redis.new
         redis.set(location, [self.latitude, self.longitude].to_json)
@@ -359,7 +372,7 @@ class Event < ActiveRecord::Base
   def enqueue_geocoding_worker
     return if (latitude.present? && longitude.present?) || (address.blank? && postcode.blank?) || nominatim_count >= NOMINATIM_MAX_ATTEMPTS
 
-    location = postcode ? postcode : address
+    location = address
 
     begin
       redis = Redis.new
@@ -374,6 +387,14 @@ class Event < ActiveRecord::Base
       raise e unless Rails.env.production?
       puts "Redis error: #{e.message}"
     end
+  end
+
+  def nominatim_lookup(args)
+    url = 'https://nominatim.openstreetmap.org/search.php'
+    response = HTTParty.get(url,
+                            query: args,
+                            headers: { 'User-Agent' => "Elixir TeSS <#{TeSS::Config.contact_email}>" })
+    (JSON.parse response.body, symbolize_names: true)[0]
   end
 
 

@@ -1,8 +1,9 @@
-class ContentProvider < ActiveRecord::Base
+class ContentProvider < ApplicationRecord
 
   include PublicActivity::Common
   include LogParameterChanges
   include Searchable
+  include IdentifiersDotOrg
 
   extend FriendlyId
   friendly_id :title, use: :slugged
@@ -11,7 +12,7 @@ class ContentProvider < ActiveRecord::Base
   has_many :events, :dependent => :destroy
 
   belongs_to :user
-  belongs_to :node
+  belongs_to :node, optional: true
 
   delegate :name, to: :node, prefix: true, allow_nil: true
 
@@ -29,7 +30,7 @@ class ContentProvider < ActiveRecord::Base
   # The order of these determines which providers have precedence when scraping.
   # Low -> High
   PROVIDER_TYPE = ['Portal', 'Organisation', 'Project']
-  has_image(placeholder: "/assets/placeholder-organization.png")
+  has_image(placeholder: 'placeholder-organization.png')
 
   if TeSS::Config.solr_enabled
     # :nocov:
@@ -92,5 +93,9 @@ class ContentProvider < ActiveRecord::Base
     end
 
     content_provider
+  end
+
+  def self.identifiers_dot_org_key
+    'p'
   end
 end

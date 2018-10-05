@@ -11,6 +11,8 @@
       <div class="content_action">
         <%= link_to t('.back', :default => t("helpers.links.back")), :back, :class => 'btn btn-info'  %>
 
+        <%= render partial: 'common/identifiers_dot_org_button', locals: { resource: @material } if TeSS::Config.identifiers_prefix %>
+
         <% if !current_user.nil? and policy(@material).update? %>
             <%= link_to t('.edit', :default => t("helpers.links.edit")),
                         edit_material_path(@material), :class => 'btn btn-primary' %>
@@ -58,9 +60,8 @@
             <div>
               <%= render partial: 'common/extra_metadata', locals: { resource: @material } %>
 
-              <% unless @material.edit_suggestion.nil? || (@material.edit_suggestion.scientific_topics.empty? &&
-                !@material.edit_suggestion.data) || current_user.nil? || !policy(@material).update? %>
-                <%= render partial: 'common/approve_topic_suggestions', locals: { suggestion: @material.edit_suggestion } %>
+              <% if policy(@material).update? && @material.edit_suggestion %>
+                <%= render partial: 'common/approve_term_suggestions', locals: { suggestion: @material.edit_suggestion } %>
               <% end %>
 
               <% if @material.events.any? %>

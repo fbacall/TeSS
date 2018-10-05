@@ -7,29 +7,21 @@ class MaterialTest < ActiveSupport::TestCase
 
 
   setup do
-    @user = User.new(:username=>'bobo',
-                  :email=>'exampl@example.com',
-                  :role => roles(:user),
-                  :password => SecureRandom.base64
-    )
-    @user.save!
-    @material = Material.new(:title => 'title',
-                             :short_description => 'short desc',
-                             :url => 'http://goog.e.com',
-                             :user => @user,
-                             :authors => ['horace', 'flo'],
-                             :content_provider => ContentProvider.first)
-    @material.save!
-
+    @user = users(:regular_user)
+    @material = Material.create!(title: 'title',
+                                 short_description: 'short desc',
+                                 url: 'http://goog.e.com',
+                                 user: @user,
+                                 authors: ['horace', 'flo'],
+                                 content_provider: content_providers(:goblet))
   end
 
   test 'should reassign owner when user deleted' do
-    material_id = @material.id
     owner = @material.user
     assert_not_equal 'default_user', owner.role.name
     owner.destroy
     #Reload the material
-    material = Material.find_by_id(material_id)
+    material = @material.reload
     assert_equal 'default_user', material.user.role.name
   end
 
@@ -232,5 +224,25 @@ class MaterialTest < ActiveSupport::TestCase
     assert_equal res_count, material.reload.external_resources.count
     assert_equal 1, material.external_resources.where(title: 'TeSS').count
     assert_not_includes material.external_resources, new_resource, 'Should preserve oldest external resource'
+  end
+
+
+  test 'verified users scope' do
+    bad_user = users(:unverified_user)
+    bad_material = bad_user.materials.build(title: 'bla', url: 'http://example.com/spam', short_description: 'vvv')
+    assert bad_material.user_requires_approval?
+    bad_material.save!
+
+    good_user = users(:regular_user)
+    good_material = good_user.materials.build(title: 'h', url: 'http://example.com/good-stuff', short_description: 'vvv')
+    refute good_material.user_requires_approval?
+    good_material.save!
+
+    # Unscoped
+    assert_includes Material.where(short_description: 'vvv').to_a, good_material
+    assert_includes Material.where(short_description: 'vvv').to_a, bad_material
+    # Scoped
+    assert_includes Material.from_verified_users.where(short_description: 'vvv').to_a, good_material
+    refute_includes Material.from_verified_users.where(short_description: 'vvv').to_a, bad_material
   end
 end

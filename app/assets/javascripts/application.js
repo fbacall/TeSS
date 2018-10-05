@@ -76,18 +76,24 @@ function reposition_tiles(container, tile_class){
     });
 }
 
-$(document).ready(function () {
+
+document.addEventListener("turbolinks:load", function() {
+
     // Show the tab associated with the window location hash (e.g. "#packages")
     if (window.location.hash) {
         var tab = $('ul.nav a[href="' + window.location.hash + '"]');
         if (tab.length) {
-            tab.tab('show');
+            // This terrible hack gets around the fact that event handlers in view templates get bound after the
+            // `tab.tab('show')` executes, so nothing happens.
+            setTimeout(function () { tab.tab('show') }, 50);
         }
     }
 
     // Store the open tab in the window location hash
     $('.nav-tabs a').on("shown.bs.tab", function(e) {
+        var scrollPos = $('html').scrollTop() || $('body').scrollTop();
         window.location.hash = this.hash;
+        $('html,body').scrollTop(scrollPos)
     });
 
     // Disabled tabs
@@ -124,6 +130,8 @@ $(document).ready(function () {
         return false;
     });
 
+
+
     // Masonry
     $('.nav-tabs a').on("shown.bs.tab", function(e) {
         reposition_tiles('masonry', 'masonry-brick');
@@ -147,8 +155,10 @@ $(document).ready(function () {
         var templateName = $(this).data('template') || 'autocompleter/resource';
 
         // Render the existing associations on page load
-        for (var i = 0; i < existingValues.length; i++) {
-            listElement.append(HandlebarsTemplates[templateName](existingValues[i]));
+        if (!listElement.children('li').length) {
+            for (var i = 0; i < existingValues.length; i++) {
+                listElement.append(HandlebarsTemplates[templateName](existingValues[i]));
+            }
         }
 
         inputElement.autocomplete({
@@ -229,4 +239,27 @@ $(document).ready(function () {
             }
         });
     });
+
+// TODO: Try to get scrollspy to work. Something is preventing it from triggering
+    $('.about-block').scrollspy({
+        target: '.about-page-menu',
+        offset: 40
+    });
+
+    $('.about-page-menu').affix({
+        offset: {
+            top: 100,
+            bottom: function () {
+                return (this.bottom = $('.footer').outerHeight(true))
+            }
+        }
+    });
+
+    $("a[rel~=popover], .has-popover").popover();
+    $("a[rel~=tooltip], .has-tooltip").tooltip();
 });
+
+function truncateWithEllipses(text, max)
+{
+    return text.substr(0,max-1)+(text.length>max?'&hellip;':'');
+}

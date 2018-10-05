@@ -135,7 +135,7 @@ class EventTest < ActiveSupport::TestCase
     e.save!
     assert_equal 2, e.scientific_topics.count
 
-    assert_difference('ScientificTopicLink.count', -2) do
+    assert_difference('OntologyTermLink.count', -2) do
       e.scientific_topic_names = []
       e.save!
     end
@@ -145,31 +145,31 @@ class EventTest < ActiveSupport::TestCase
     e = events(:scraper_user_event)
 
     # Via names
-    assert_difference('ScientificTopicLink.count', 2) do
+    assert_difference('OntologyTermLink.count', 2) do
       e.scientific_topic_names = ['Proteins', 'Chromosomes', 'Proteins', 'Chromosomes']
       e.save!
       assert_equal 2, e.scientific_topics.count
     end
 
-    assert_no_difference('ScientificTopicLink.count') do
+    assert_no_difference('OntologyTermLink.count') do
       e.scientific_topic_names = ['Proteins', 'Chromosomes']
       e.save!
       assert_equal 2, e.scientific_topics.count
     end
 
     # Via uris
-    assert_difference('ScientificTopicLink.count', -2) do
+    assert_difference('OntologyTermLink.count', -2) do
       e.scientific_topic_links.clear
     end
 
-    assert_difference('ScientificTopicLink.count', 2) do
+    assert_difference('OntologyTermLink.count', 2) do
       e.scientific_topic_uris = ['http://edamontology.org/topic_0078', 'http://edamontology.org/topic_0654',
                                   'http://edamontology.org/topic_0078', 'http://edamontology.org/topic_0654']
       e.save!
       assert_equal 2, e.scientific_topics.count
     end
 
-    assert_no_difference('ScientificTopicLink.count') do
+    assert_no_difference('OntologyTermLink.count') do
       e.scientific_topic_uris = ['http://edamontology.org/topic_0078', 'http://edamontology.org/topic_0654']
       e.save!
       assert_equal 2, e.scientific_topics.count
@@ -181,23 +181,23 @@ class EventTest < ActiveSupport::TestCase
     proteins_term = EDAM::Ontology.instance.lookup('http://edamontology.org/topic_0078')
     chromosomes_term = EDAM::Ontology.instance.lookup('http://edamontology.org/topic_0624')
 
-    assert_difference('ScientificTopicLink.count', 2) do
+    assert_difference('OntologyTermLink.count', 2) do
       e.scientific_topics = [proteins_term, chromosomes_term, proteins_term, chromosomes_term]
       e.save!
     end
 
-    assert_no_difference('ScientificTopicLink.count') do
+    assert_no_difference('OntologyTermLink.count') do
       e.scientific_topics = [proteins_term, chromosomes_term]
       e.save!
     end
 
     # All three
-    assert_no_difference('ScientificTopicLink.count') do
+    assert_no_difference('OntologyTermLink.count') do
       e.scientific_topic_names = ['Proteins', 'Chromosomes']
       e.save!
     end
 
-    assert_no_difference('ScientificTopicLink.count') do
+    assert_no_difference('OntologyTermLink.count') do
       e.scientific_topic_uris = ['http://edamontology.org/topic_0078', 'http://edamontology.org/topic_0654']
       e.save!
     end
@@ -251,7 +251,7 @@ class EventTest < ActiveSupport::TestCase
   end
 
   test 'blocks disallowed domain' do
-    event = Event.new(title: 'Bad event', url: 'bad-domain.example/event')
+    event = Event.new(user: users(:regular_user), title: 'Bad event', url: 'bad-domain.example/event')
 
     refute event.save
 
@@ -259,7 +259,7 @@ class EventTest < ActiveSupport::TestCase
   end
 
   test 'does not block non-disallowed(?!) domain' do
-    event = Event.new(title: 'Good event', url: 'good-domain.example/event')
+    event = Event.new(user: users(:regular_user), title: 'Good event', url: 'good-domain.example/event')
 
     assert event.save
 
@@ -271,7 +271,7 @@ class EventTest < ActiveSupport::TestCase
     begin
       TeSS::Config.blocked_domains = nil
       assert_nothing_raised do
-        Event.create!(title: 'Bad event', url: 'bad-domain.example/event')
+        Event.create!(user: users(:regular_user), title: 'Bad event', url: 'bad-domain.example/event')
       end
     ensure
       TeSS::Config.blocked_domains = domains
@@ -280,7 +280,7 @@ class EventTest < ActiveSupport::TestCase
 
   test 'enqueues a geocoding worker after creating an event' do
     assert_difference('GeocodingWorker.jobs.size', 1) do
-      event = Event.create(title: 'New event', url: 'http://example.com', venue: 'A place', city: 'Manchester')
+      event = Event.create(user: users(:regular_user), title: 'New event', url: 'http://example.com', venue: 'A place', city: 'Manchester')
       refute event.address.blank?
     end
   end
@@ -296,14 +296,14 @@ class EventTest < ActiveSupport::TestCase
 
   test 'does not enqueue a geocoding worker after creating an event with no address' do
     assert_no_difference('GeocodingWorker.jobs.size') do
-      event = Event.create(title: 'New event', url: 'http://example.com', online: true)
+      event = Event.create(user: users(:regular_user), title: 'New event', url: 'http://example.com', online: true)
       assert event.address.blank?
     end
   end
 
   test 'does not enqueue a geocoding worker after creating an event with defined lat/lon' do
     assert_no_difference('GeocodingWorker.jobs.size') do
-      event = Event.create(title: 'New event', url: 'http://example.com', latitude: 25, longitude: 25, venue: 'Place')
+      event = Event.create(user: users(:regular_user), title: 'New event', url: 'http://example.com', latitude: 25, longitude: 25, venue: 'Place')
       refute event.address.blank?
     end
   end
@@ -319,7 +319,7 @@ class EventTest < ActiveSupport::TestCase
   end
 
   test 'does not enqueue a geocoding worker if the address is cached' do
-    event = Event.new(title: 'New event', url: 'http://example.com', venue: 'A place', city: 'Manchester')
+    event = Event.new(user: users(:regular_user), title: 'New event', url: 'http://example.com', venue: 'A place', city: 'Manchester')
     redis = Redis.new
     redis.set(event.address, [45, 45].to_json)
 

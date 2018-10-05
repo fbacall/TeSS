@@ -19,11 +19,14 @@
 
             <%= f.input :password_confirmation, required: true, input_html: { autocomplete: 'off' } %>
 
-            <% unless Rails.application.secrets.recaptcha['sitekey'].blank? -%>
+            <% unless Rails.application.secrets.recaptcha[:sitekey].blank? -%>
                 <div class="form-group">
                   <%= recaptcha_tags ajax: true %>
                 </div>
             <% end -%>
+
+            <%= f.input :processing_consent, as: :boolean, input_html: { autocomplete: 'off' },
+                        label: "I have read and understood the #{link_to('privacy policy', privacy_path, target: :_blank)} and consent to TeSS processing my data.".html_safe %>
 
             <div class="actions">
               <%= f.submit "Register", :class => 'btn btn-primary' %>

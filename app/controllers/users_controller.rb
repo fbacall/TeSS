@@ -71,11 +71,11 @@ class UsersController < ApplicationController
         @user.create_activity :update, owner: current_user
         format.html { redirect_to @user, notice: 'Profile was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
-        format.js { render nothing: true, status: :ok, location: @user }
+        format.js { head :ok, location: @user }
       else
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
-        format.js { render nothing: true, status: :unprocessable_entity }
+        format.js { head :unprocessable_entity }
       end
     end
   end
@@ -95,16 +95,14 @@ class UsersController < ApplicationController
   def change_token
     authorize @user
     if @user.authentication_token.nil?
-      flash[:alert] = "Authentication token cannot be set to nil - action not allowed (status code: 422 Unprocessable Entity)."
-      handle_error(:unprocessable_entity) and return
+      handle_error(:unprocessable_entity, "Authentication token cannot be set to nil - action not allowed (status code: 422 Unprocessable Entity).") and return
     end
     @user.authentication_token = Devise.friendly_token
     if @user.save
       flash[:notice] = "Authentication token successfully regenerated."
       redirect_to @user
     else
-      flash[:alert] = "Failed to regenerate Authentication token (status code: 422 Unprocessable Entity)."
-      handle_error(:unprocessable_entity)
+      handle_error(:unprocessable_entity, "Failed to regenerate Authentication token (status code: 422 Unprocessable Entity).")
     end
   end
 

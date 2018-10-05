@@ -1,4 +1,4 @@
-class ExternalResource < ActiveRecord::Base
+class ExternalResource < ApplicationRecord
   belongs_to :source, polymorphic: true
   has_one :link_monitor, as: :lcheck, dependent: :destroy
 
@@ -28,6 +28,8 @@ class ExternalResource < ActiveRecord::Base
     if is_fairsharing?
       fairsharing_id = url.split(/\//)[-1]
       if fairsharing_id =~ /biodbcore-\d{6}/
+        return "#{FAIRSHARING_BASE}/api/database/summary/#{fairsharing_id}"
+      elsif fairsharing_id =~ /bsg-d\d{6}/
         return "#{FAIRSHARING_BASE}/api/database/summary/#{fairsharing_id}"
       elsif fairsharing_id =~ /bsg-s\d{6}/
         return "#{FAIRSHARING_BASE}/api/standard/summary/#{fairsharing_id}"

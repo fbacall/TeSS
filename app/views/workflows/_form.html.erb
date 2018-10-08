@@ -69,16 +69,25 @@
         <h3>Diagram</h3>
         <%= f.hidden_field :workflow_content, id: 'workflow_content'  %>
 
-        <% content_for :sidebar_title do %>
-            <span class="muted">Nothing selected</span>
-        <% end %>
-        <%= render partial: 'workflows/workflow_diagram', locals: { workflow:  @workflow, editable: true } %>
+        <% if @workflow.type == 'ConceptMap' %>
 
-        <div class="form-group actions">
-          <%= f.submit "Save workflow", class: 'btn btn-primary workflow-form-submit' %>
-          <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                      @workflow.new_record? ? workflows_path : workflow_path(@workflow), :class => 'btn btn-default' %>
-        </div>
+            <%= render partial: 'workflows/concept_map_diagram', locals: { workflow:  @workflow, editable: true } %>
+
+
+      <% else %>
+
+          <% content_for :sidebar_title do %>
+              <span class="muted">Nothing selected</span>
+          <% end %>
+          <%= render partial: 'workflows/workflow_diagram', locals: { workflow:  @workflow, editable: true } %>
+
+          <div class="form-group actions">
+            <%= f.submit "Save workflow", class: 'btn btn-primary workflow-form-submit' %>
+            <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                        @workflow.new_record? ? workflows_path : workflow_path(@workflow), :class => 'btn btn-default' %>
+          </div>
+        <% end %>
+
       </div>
     </div>
 <% end %>

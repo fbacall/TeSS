@@ -1,7 +1,19 @@
 <div id="app"></div>
 
 <script>
+
   var wf = new Workflow('#app', {
-    title: "Workflow name"
+      title: "Workflow name",
+      preload: <%= workflow.workflow_content.to_json.html_safe %>
   });
+
+  $('.workflow-form-submit').click(function () {
+      $('#workflow_content').val(JSON.stringify(wf.export()));
+      // $('#workflow_content').val(wf.export());
+      Workflows.formSubmitted = true;
+
+      return true;
+  });
+
+
 </script>

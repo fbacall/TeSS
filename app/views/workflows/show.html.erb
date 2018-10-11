@@ -33,7 +33,7 @@
 
       <% if @workflow.type == 'ConceptMap' %>
 
-        <%= render partial: 'workflows/concept_map_diagram', locals: {workflow: @workflow, editable: true} %>
+        <%= render partial: 'workflows/concept_map_diagram', locals: {workflow: @workflow, editable: false} %>
 
 
       <% else %>

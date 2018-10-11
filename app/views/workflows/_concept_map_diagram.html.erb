@@ -3,7 +3,7 @@
 <script>
 
   var wf = new Workflow('#app', {
-      title: "Workflow name",
+      title: <%= workflow.title %>,
       preload: <%= workflow.workflow_content.to_json.html_safe %>
   });
 

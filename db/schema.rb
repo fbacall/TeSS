@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_03_113622) do
+ActiveRecord::Schema.define(version: 2018_10_29_104910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,22 @@ ActiveRecord::Schema.define(version: 2018_09_03_113622) do
     t.index ["node_id"], name: "index_content_providers_on_node_id"
     t.index ["slug"], name: "index_content_providers_on_slug", unique: true
     t.index ["user_id"], name: "index_content_providers_on_user_id"
+  end
+
+  create_table "curation_tasks", force: :cascade do |t|
+    t.string "key"
+    t.json "details"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "status", default: "open"
+    t.bigint "assignee_id"
+    t.bigint "completed_by_id"
+    t.integer "priority", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_curation_tasks_on_assignee_id"
+    t.index ["completed_by_id"], name: "index_curation_tasks_on_completed_by_id"
+    t.index ["resource_type", "resource_id"], name: "index_curation_tasks_on_resource_type_and_resource_id"
   end
 
   create_table "edit_suggestions", id: :serial, force: :cascade do |t|
@@ -427,6 +443,8 @@ ActiveRecord::Schema.define(version: 2018_09_03_113622) do
   add_foreign_key "collaborations", "users"
   add_foreign_key "content_providers", "nodes"
   add_foreign_key "content_providers", "users"
+  add_foreign_key "curation_tasks", "users", column: "assignee_id"
+  add_foreign_key "curation_tasks", "users", column: "completed_by_id"
   add_foreign_key "event_materials", "events"
   add_foreign_key "event_materials", "materials"
   add_foreign_key "events", "users"

@@ -10,7 +10,7 @@ class Material < ApplicationRecord
   include LockableFields
   include Scrapable
   include Searchable
-  include CurationQueue
+  include Curatable
   include HasSuggestions
   include IdentifiersDotOrg
   include HasFriendlyId

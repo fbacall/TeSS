@@ -1,8 +1,11 @@
-module CurationQueue
+module Curatable
   extend ActiveSupport::Concern
 
   included do
+    has_many :curation_tasks, as: :resource, inverse_of: :resource
+    attr_writer :related_curation_task
     after_create :notify_curators, if: :user_requires_approval?
+    after_save :update_curation_task, if: -> { (defined? @related_curation_task) && !!@related_curation_task }
   end
 
   class_methods do
@@ -17,5 +20,9 @@ module CurationQueue
 
   def notify_curators
     CurationMailer.user_requires_approval(self.user).deliver_later
+  end
+
+  def update_curation_task
+    @related_curation_task.resolve
   end
 end

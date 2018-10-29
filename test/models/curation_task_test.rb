@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CurationTaskTest < ActiveSupport::TestCase
   test 'resolves curation task on save' do
-    event = events(:one)
+    event = events(:portal_event)
     curator = users(:curator)
     task = event.curation_tasks.create
     User.current_user = curator

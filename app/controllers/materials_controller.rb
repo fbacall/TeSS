@@ -1,6 +1,7 @@
 class MaterialsController < ApplicationController
   before_action :set_material, only: [:show, :edit, :update, :destroy, :update_packages, :add_term, :reject_term]
   before_action :set_breadcrumbs
+  before_action :set_curation_task, only: :update
 
   include SearchableIndex
   include ActionView::Helpers::TextHelper
@@ -148,6 +149,7 @@ class MaterialsController < ApplicationController
                                      locked_fields: [])
   end
 
-
-
+  def set_curation_task
+    @event.related_curation_task = CurationTask.find(params[:related_curation_task_id]) if params[:related_curation_task_id]
+  end
 end

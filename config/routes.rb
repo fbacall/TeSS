@@ -110,9 +110,12 @@ Rails.application.routes.draw do
     get code, :to => "application#handle_error", :status_code => code
   end
 
-  get 'curate/topic_suggestions' => 'curator#topic_suggestions'
-  get 'curate/users' => 'curator#users'
-  get 'curate' => 'curator#index'
+  scope :curate do
+    get 'topic_suggestions' => 'curator#topic_suggestions', as: 'curate_topic_suggestions'
+    get 'users' => 'curator#users', as: 'curate_users'
+    get '/' => 'curator#index', as: 'curate'
+    resources :tasks, controller: 'curation_tasks', as: 'curation_tasks'
+  end
 
   require 'sidekiq/web'
   authenticate :user, lambda { |u| u.is_admin? } do

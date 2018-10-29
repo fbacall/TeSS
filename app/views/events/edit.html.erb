@@ -9,7 +9,7 @@
       <%= render :partial => "common/field_lock_info" %>
     </div>
     <div class="col-md-8 col-md-pull-4">
-      <%= render :partial => 'form' %>
+      <%= render :partial => 'form', locals: { event: @event } %>
     </div>
   </div>
 </div>

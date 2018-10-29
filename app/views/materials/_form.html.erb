@@ -1,6 +1,7 @@
-<%= simple_form_for @material, :html => {:id => 'material_form'} do |f| %>
+<%= simple_form_for material, :html => {:id => 'material_form'} do |f| %>
+    <%= hidden_field_tag :related_curation_task_id, @curation_task.id if @curation_task %>
 
-    <%= render partial: 'common/error_summary', locals: { resource: @material } %>
+    <%= render partial: 'common/error_summary', locals: { resource: material } %>
 
     <%# Necessary to allow removal of all field locks %>
     <%= hidden_field_tag 'material[locked_fields][]', '' %>
@@ -31,9 +32,9 @@
 
     <%= f.multi_input :resource_type %>
 
-    <%= f.input :difficulty_level, collection: difficulty_options_for_select, selected: @material.difficulty_level.blank? ? "notspecified" : @material.difficulty_level, field_lock: true %>
+    <%= f.input :difficulty_level, collection: difficulty_options_for_select, selected: material.difficulty_level.blank? ? "notspecified" : material.difficulty_level, field_lock: true %>
 
-    <%= f.input :licence, collection: licence_options_for_select, selected: @material.licence.blank? ? "notspecified" : @material.licence, field_lock: true %>
+    <%= f.input :licence, collection: licence_options_for_select, selected: material.licence.blank? ? "notspecified" : material.licence, field_lock: true %>
 
     <%= f.multi_input :authors, suggestions: people_suggestions %>
 
@@ -46,7 +47,7 @@
       <%= f.field_lock :external_resources %>
 
       <div id="external-resources-list">
-        <% @material.external_resources.each_with_index do |external_resource, index| %>
+        <% material.external_resources.each_with_index do |external_resource, index| %>
             <%= render partial: 'common/external_resource_form',
                        locals: { form_name: 'material', index: index, external_resource: external_resource } %>
         <% end %>

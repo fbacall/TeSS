@@ -1,6 +1,6 @@
 <script>
     $(function(){
-        if (<%=@event.online?%>){
+        if (<%=event.online?%>){
             $('.address_content').hide()
         }
     })
@@ -14,19 +14,20 @@
   })
 
 </script>
-<%= simple_form_for @event, html: { id: 'event_form' }  do |f| %>
+<%= simple_form_for event, html: { id: 'event_form' }  do |f| %>
+  <%= hidden_field_tag :related_curation_task_id, @curation_task.id if @curation_task %>
 
-    <%= render partial: 'common/error_summary', locals: { resource: @event } %>
+  <%= render partial: 'common/error_summary', locals: { resource: event } %>
 
     <div class="form-group">
       <%= label_tag('type')%> <br/>
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn btn-default <%= 'active' unless @event.online? %>">
-          <%= f.radio_button 'online', 'false', class: 'location', checked: !@event.online?, autocomplete: 'off' %>
+        <label class="btn btn-default <%= 'active' unless event.online? %>">
+          <%= f.radio_button 'online', 'false', class: 'location', checked: !event.online?, autocomplete: 'off' %>
           <%= icon_for(:face_to_face, :small)%> Face-to-face
         </label>
-        <label class="btn btn-default <%= 'active' if @event.online? %>">
-          <%= f.radio_button 'online', 'true', class: 'location', checked: @event.online?, autocomplete: 'off' %>
+        <label class="btn btn-default <%= 'active' if event.online? %>">
+          <%= f.radio_button 'online', 'true', class: 'location', checked: event.online?, autocomplete: 'off' %>
           <i class="fa fa-desktop" aria-hidden="true" id="online-symbol"></i> Online
         </label>
       </div>
@@ -100,7 +101,7 @@
       <%= f.field_lock :external_resources %>
 
       <div id="external-resources-list">
-        <% @event.external_resources.each_with_index do |external_resource, index| %>
+        <% event.external_resources.each_with_index do |external_resource, index| %>
             <%= render partial: 'common/external_resource_form',
                        locals: { form_name: 'event', index: index, external_resource: external_resource } %>
         <% end %>

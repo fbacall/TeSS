@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 assigned:
-  key: MyString
+  key: update
   details: 
   resource: one (Event)
   status: open
@@ -10,7 +10,7 @@ assigned:
   priority: 0
 
 unassigned:
-  key: MyString
+  key: update
   details: 
   resource: two (Event)
   status: open
@@ -19,7 +19,7 @@ unassigned:
   priority: 0
 
 closed:
-  key: MyString
+  key: update
   details:
   resource: two (Event)
   status: resolved

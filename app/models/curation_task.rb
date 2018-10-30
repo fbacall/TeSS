@@ -3,6 +3,9 @@ class CurationTask < ApplicationRecord
   belongs_to :assignee, class_name: 'User', optional: true
   belongs_to :completed_by, class_name: 'User', optional: true
 
+  validates :status, inclusion: ['open', 'resolved']
+  validates :key, inclusion: ['update'] # TODO: Come up with some more tasks
+
   PRIORITY = {
       low: -10,
       medium: 0,
@@ -23,7 +26,7 @@ class CurationTask < ApplicationRecord
   end
 
   def title
-    "Task: Update #{resource_type}"
+    "Task: #{key.titleize} #{resource_type}"
   end
 
   def resolve

@@ -1,0 +1,3 @@
+<% type = @curation_task.resource_type.underscore %>
+
+<%= render partial: "#{type.pluralize}/form", locals: { type.to_sym => @curation_task.resource } %>

@@ -1,7 +1,5 @@
-<% type = @curation_task.resource_type.underscore %>
-
 <%= render @curation_task %>
 
 <hr/>
 
-<%= render partial: "#{type.pluralize}/form", locals: { type.to_sym => @curation_task.resource } %>
+<%= render partial: "curation_tasks/tasks/#{@curation_task.key}" %>

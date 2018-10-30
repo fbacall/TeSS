@@ -1,6 +1,15 @@
 require 'test_helper'
 
 class CurationTaskTest < ActiveSupport::TestCase
+  test 'validates task key/status' do
+    event = events(:portal_event)
+    invalid_task = event.curation_tasks.build(status: 'banana', key: 'hotornot')
+
+    refute invalid_task.save
+    refute_empty invalid_task.errors[:status]
+    refute_empty invalid_task.errors[:key]
+  end
+
   test 'resolves curation task on save' do
     event = events(:portal_event)
     curator = users(:curator)

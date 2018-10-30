@@ -1,0 +1,15 @@
+<%= simple_form_for @curation_task.resource, html: { id: 'event_form' }  do |f| %>
+  <%= hidden_field_tag :related_curation_task_id, @curation_task.id %>
+
+  <%= render partial: 'common/error_summary', locals: { resource: @curation_task.resource } %>
+
+  <div class="address_content">
+    <%= render partial: 'events/partials/address_finder', locals: { f: f } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit 'Update event', :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                :back, :class => 'btn btn-default' %>
+  </div>
+<% end %>

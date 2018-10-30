@@ -207,6 +207,7 @@ ActiveRecord::Schema.define(version: 2018_10_29_104910) do
     t.datetime "updated_at", null: false
     t.text "long_description"
     t.string "target_audience", default: [], array: true
+    t.string "keywords", default: [], array: true
     t.string "authors", default: [], array: true
     t.string "contributors", default: [], array: true
     t.string "licence", default: "notspecified"
@@ -216,9 +217,7 @@ ActiveRecord::Schema.define(version: 2018_10_29_104910) do
     t.integer "user_id"
     t.date "last_scraped"
     t.boolean "scraper_record", default: false
-    t.text "keyword"
     t.string "resource_type", default: [], array: true
-    t.string "keywords", default: [], array: true
     t.index ["content_provider_id"], name: "index_materials_on_content_provider_id"
     t.index ["slug"], name: "index_materials_on_slug", unique: true
     t.index ["user_id"], name: "index_materials_on_user_id"

@@ -13,6 +13,10 @@ class CurationTask < ApplicationRecord
     where(status: 'open')
   end
 
+  def self.unassigned
+    where(assignee_id: nil)
+  end
+
   def resolve
     update_attributes(completed_by: User.current_user, status: 'resolved')
   end

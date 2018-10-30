@@ -18,4 +18,37 @@ class CurationTaskTest < ActiveSupport::TestCase
     task.reload
     assert_equal curator, task.completed_by
   end
+
+  test 'scopes' do
+    event = events(:portal_event)
+    curator = users(:curator)
+    open = event.curation_tasks.create(status: 'open')
+    resolved = event.curation_tasks.create(status: 'resolved')
+    assigned = event.curation_tasks.create(status: 'open', assignee: curator)
+    assigned_resolved = event.curation_tasks.create(status: 'resolved', assignee: curator)
+
+    curators_tasks = curator.curation_tasks.to_a
+    assert_includes curators_tasks, assigned
+    assert_includes curators_tasks, assigned_resolved
+    assert_not_includes curators_tasks, resolved
+    assert_not_includes curators_tasks, open
+
+    curators_open_tasks = curator.curation_tasks.open.to_a
+    assert_includes curators_open_tasks, assigned
+    assert_not_includes curators_open_tasks, assigned_resolved
+    assert_not_includes curators_open_tasks, resolved
+    assert_not_includes curators_open_tasks, open
+
+    unassigned_tasks = CurationTask.unassigned.to_a
+    assert_not_includes unassigned_tasks, assigned
+    assert_not_includes unassigned_tasks, assigned_resolved
+    assert_includes unassigned_tasks, resolved
+    assert_includes unassigned_tasks, open
+
+    unassigned_open_tasks = CurationTask.unassigned.open.to_a
+    assert_not_includes unassigned_open_tasks, assigned
+    assert_not_includes unassigned_open_tasks, assigned_resolved
+    assert_not_includes unassigned_open_tasks, resolved
+    assert_includes unassigned_open_tasks, open
+  end
 end

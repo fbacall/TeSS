@@ -34,6 +34,7 @@ class User < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :stars, dependent: :destroy
   has_one :ban
+  has_many :curation_tasks, inverse_of: :assignee, foreign_key: :assignee_id
 
   before_create :set_default_role, :set_default_profile
   before_create :skip_email_confirmation_for_non_production

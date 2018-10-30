@@ -1,19 +1,28 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+assigned:
   key: MyString
   details: 
   resource: one (Event)
   status: open
-  assignee:
+  assignee: curator
   completed_by:
   priority: 0
 
-two:
+unassigned:
   key: MyString
   details: 
   resource: two (Event)
   status: open
   assignee:
   completed_by:
+  priority: 0
+
+closed:
+  key: MyString
+  details:
+  resource: two (Event)
+  status: resolved
+  assignee: curator
+  completed_by: curator
   priority: 0

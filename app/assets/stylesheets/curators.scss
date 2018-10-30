@@ -35,5 +35,9 @@ ul.recent-approvals {
       border-bottom: none;
     }
   }
+}
 
+.curation-task {
+  &.curation-task-open { }
+  &.curation-task-resolved { color: #aaa; }
 }

@@ -1,7 +1,15 @@
-<div>
-  <h3><%= link_to(curation_task.title, curation_task) %></h3>
+<div class="list-card curation-task curation-task-<%= curation_task.status -%>">
+  <% if curation_task.open? %>
+    <%= link_to(curation_task, class: 'list-card-heading') do %>
+      <i class="fa fa-square-o"></i> <%= curation_task.title %>
+    <% end %>
+  <% else %>
+    <span class="list-card-heading">
+      <i class="fa fa-check-square-o"></i> <%= curation_task.title %>
+    </span>
+  <% end %>
   <strong>Status:</strong> <%= curation_task.status.humanize %><br/>
   <strong>Resource:</strong> <%= link_to curation_task.resource.title, curation_task.resource, target: :_blank %><br/>
-  <strong>Assigned to:</strong> <%= curation_task.assignee ? curation_task.assignee.name : 'No one' %><br/>
-  <strong>Completed by:</strong> <%= curation_task.assignee ? curation_task.assignee.name : 'No one' %><br/>
+  <strong>Assigned to:</strong> <%= curation_task.assignee ? link_to(curation_task.assignee.name, curation_task.assignee) : 'No one' %><br/>
+  <strong>Completed by:</strong> <%= curation_task.completed_by ? link_to(curation_task.completed_by.name, curation_task.completed_by) : 'No one' %><br/>
 </div>

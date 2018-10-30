@@ -29,4 +29,8 @@ class CurationTask < ApplicationRecord
   def resolve
     update_attributes(completed_by: User.current_user, status: 'resolved')
   end
+
+  def open?
+    status == 'open'
+  end
 end

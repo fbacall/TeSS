@@ -5,14 +5,16 @@ class CurationTasksController < ApplicationController
 
   def index
     # Sorting by `completed_by_id` puts unresolved tasks at the top!
-    @curation_tasks = CurationTask.order('completed_by_id DESC, priority DESC').all
+    @curation_tasks = current_user.curation_task_queue
+    @completed_curation_tasks = current_user.completed_curation_tasks.order('updated_at DESC').limit(5)
   end
 
   def show
+
   end
 
   def next
-    task = CurationTask.queue_for_user(current_user).first
+    task = current_user.curation_task_queue.first
     if task
       redirect_to task
     else

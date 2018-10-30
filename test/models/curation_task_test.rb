@@ -62,7 +62,7 @@ class CurationTaskTest < ActiveSupport::TestCase
     assigned = event.curation_tasks.create(status: 'open', assignee: curator, priority: 10)
     assigned_high_prio = event.curation_tasks.create(status: 'open', assignee: curator, priority: 100)
 
-    queue = CurationTask.queue_for_user(curator).to_a
+    queue = curator.curation_task_queue.to_a
     assert_not_includes queue, resolved
     assert_equal [assigned_high_prio, assigned, unassigned_high_prio, unassigned], queue
   end

@@ -35,6 +35,7 @@ class User < ApplicationRecord
   has_many :stars, dependent: :destroy
   has_one :ban
   has_many :curation_tasks, inverse_of: :assignee, foreign_key: :assignee_id
+  has_many :completed_curation_tasks, class_name: 'CurationTask', inverse_of: :completed_by, foreign_key: :completed_by_id
 
   before_create :set_default_role, :set_default_profile
   before_create :skip_email_confirmation_for_non_production
@@ -228,6 +229,10 @@ class User < ApplicationRecord
 
   def created_resources
     materials + events
+  end
+
+  def curation_task_queue
+    CurationTask.queue_for_user(self)
   end
 
   private

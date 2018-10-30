@@ -1205,4 +1205,14 @@ class EventsControllerTest < ActionController::TestCase
     end
     assert_redirected_to next_curation_tasks_path
   end
+
+  test 'should not resolve unrelated curation task when updating event' do
+    sign_in @event.user
+    task = materials(:good_material).curation_tasks.create
+    assert_no_difference('CurationTask.open.count') do
+      assert_raise(ActiveRecord::RecordNotFound) do
+        patch :update, params: { id: @event, event: @updated_event, related_curation_task_id: task }
+      end
+    end
+  end
 end

@@ -89,7 +89,7 @@ module Curation
   end
 
   def set_curation_task
-    curated_resource.related_curation_task = CurationTask.find(params[:related_curation_task_id]) if params[:related_curation_task_id]
+    curated_resource.related_curation_task = curated_resource.curation_tasks.find(params[:related_curation_task_id]) if params[:related_curation_task_id]
   end
 
   def resource_or_next_curation_task

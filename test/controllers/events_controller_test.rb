@@ -1196,4 +1196,13 @@ class EventsControllerTest < ActionController::TestCase
     # Search params
     assert_equal 'search', assigns(:search_params)
   end
+
+  test 'should resolve curation task and redirect to next after updating event' do
+    sign_in @event.user
+    task = @event.curation_tasks.create
+    assert_difference('CurationTask.open.count', -1) do
+      patch :update, params: { id: @event, event: @updated_event, related_curation_task_id: task }
+    end
+    assert_redirected_to next_curation_tasks_path
+  end
 end

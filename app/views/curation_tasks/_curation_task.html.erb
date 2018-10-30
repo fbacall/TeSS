@@ -1,7 +1,7 @@
 <div>
-  <h3>Task</h3>
+  <h3><%= link_to(curation_task.title, curation_task) %></h3>
   <strong>Status:</strong> <%= curation_task.status.humanize %><br/>
   <strong>Resource:</strong> <%= link_to curation_task.resource.title, curation_task.resource, target: :_blank %><br/>
   <strong>Assigned to:</strong> <%= curation_task.assignee ? curation_task.assignee.name : 'No one' %><br/>
-  <strong>Completed by to:</strong> <%= curation_task.assignee ? curation_task.assignee.name : 'No one' %><br/>
+  <strong>Completed by:</strong> <%= curation_task.assignee ? curation_task.assignee.name : 'No one' %><br/>
 </div>

@@ -1,12 +1,11 @@
 class MaterialsController < ApplicationController
   before_action :set_material, only: [:show, :edit, :update, :destroy, :update_packages, :add_term, :reject_term]
   before_action :set_breadcrumbs
-  before_action :set_curation_task, only: :update
 
   include SearchableIndex
   include ActionView::Helpers::TextHelper
   include FieldLockEnforcement
-  include TopicCuration
+  include Curation
 
   # GET /materials
   # GET /materials?q=queryparam
@@ -89,7 +88,7 @@ class MaterialsController < ApplicationController
     respond_to do |format|
       if @material.update(material_params)
         @material.create_activity(:update, owner: current_user) if @material.log_update_activity?
-        format.html { redirect_to @material, notice: 'Material was successfully updated.' }
+        format.html { redirect_to resource_or_next_curation_task, notice: 'Material was successfully updated.' }
         format.json { render :show, status: :ok, location: @material }
       else
         format.html { render :edit }
@@ -147,9 +146,5 @@ class MaterialsController < ApplicationController
                                      {:authors => []}, {:target_audience => []}, {:node_ids => []}, {:node_names => []},
                                      external_resources_attributes: [:id, :url, :title, :_destroy], event_ids: [],
                                      locked_fields: [])
-  end
-
-  def set_curation_task
-    @event.related_curation_task = CurationTask.find(params[:related_curation_task_id]) if params[:related_curation_task_id]
   end
 end

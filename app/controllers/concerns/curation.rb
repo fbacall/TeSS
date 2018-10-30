@@ -1,5 +1,9 @@
-module TopicCuration
+module Curation
   extend ActiveSupport::Concern
+
+  included do
+    before_action :set_curation_task, only: :update
+  end
 
   #POST /<resource>/1/add_term
   def add_term
@@ -76,5 +80,19 @@ module TopicCuration
                              recipient: resource.user,
                              parameters: log_params
     head :ok
+  end
+
+  private
+
+  def curated_resource
+    instance_variable_get("@#{controller_name.singularize}")
+  end
+
+  def set_curation_task
+    curated_resource.related_curation_task = CurationTask.find(params[:related_curation_task_id]) if params[:related_curation_task_id]
+  end
+
+  def resource_or_next_curation_task
+    curated_resource.was_curated? ? next_curation_tasks_path : curated_resource
   end
 end

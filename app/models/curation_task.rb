@@ -17,6 +17,15 @@ class CurationTask < ApplicationRecord
     where(assignee_id: nil)
   end
 
+  # All curation tasks assigned to the user, ordered by priority, then any unassigned tasks (also by priority)
+  def self.queue_for_user(user)
+    open.where(assignee_id: [user, nil]).order('assignee_id ASC, priority DESC')
+  end
+
+  def title
+    "Task: Update #{resource_type}"
+  end
+
   def resolve
     update_attributes(completed_by: User.current_user, status: 'resolved')
   end

@@ -51,4 +51,19 @@ class CurationTaskTest < ActiveSupport::TestCase
     assert_not_includes unassigned_open_tasks, resolved
     assert_includes unassigned_open_tasks, open
   end
+
+  test 'curation queue for user' do
+    CurationTask.destroy_all
+    event = events(:iann_event)
+    curator = users(:curator)
+    unassigned = event.curation_tasks.create(status: 'open', priority: 10)
+    unassigned_high_prio = event.curation_tasks.create(status: 'open', priority: 100)
+    resolved = event.curation_tasks.create(status: 'resolved')
+    assigned = event.curation_tasks.create(status: 'open', assignee: curator, priority: 10)
+    assigned_high_prio = event.curation_tasks.create(status: 'open', assignee: curator, priority: 100)
+
+    queue = CurationTask.queue_for_user(curator).to_a
+    assert_not_includes queue, resolved
+    assert_equal [assigned_high_prio, assigned, unassigned_high_prio, unassigned], queue
+  end
 end

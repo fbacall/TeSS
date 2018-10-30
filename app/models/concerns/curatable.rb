@@ -5,7 +5,7 @@ module Curatable
     has_many :curation_tasks, as: :resource, inverse_of: :resource
     attr_writer :related_curation_task
     after_create :notify_curators, if: :user_requires_approval?
-    after_save :update_curation_task, if: -> { (defined? @related_curation_task) && !!@related_curation_task }
+    after_save :update_curation_task, if: :was_curated?
   end
 
   class_methods do
@@ -24,5 +24,9 @@ module Curatable
 
   def update_curation_task
     @related_curation_task.resolve
+  end
+
+  def was_curated?
+    (defined? @related_curation_task) && !!@related_curation_task
   end
 end

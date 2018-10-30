@@ -3,12 +3,11 @@ class EventsController < ApplicationController
                                    :redirect, :report, :update_report, :add_data, :reject_data]
   before_action :set_breadcrumbs
   before_action :disable_pagination, only: :index, if: lambda { |controller| controller.request.format.ics? or controller.request.format.csv? }
-  before_action :set_curation_task, only: :update
 
   include SearchableIndex
   include ActionView::Helpers::TextHelper
   include FieldLockEnforcement
-  include TopicCuration
+  include Curation
 
   # GET /events
   # GET /events.json
@@ -113,7 +112,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.update(event_params)
         @event.create_activity(:update, owner: current_user) if @event.log_update_activity?
-        format.html { redirect_to @event, notice: 'Event was successfully updated.' }
+        format.html { redirect_to resource_or_next_curation_task, notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else
         format.html { render :edit }
@@ -189,9 +188,5 @@ class EventsController < ApplicationController
 
   def disable_pagination
     params[:per_page] = 2 ** 10
-  end
-
-  def set_curation_task
-    @event.related_curation_task = CurationTask.find(params[:related_curation_task_id]) if params[:related_curation_task_id]
   end
 end

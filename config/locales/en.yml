@@ -36,3 +36,13 @@ en:
       profile:
         firstname: 'First name'
         surname: 'Last name'
+  curation_tasks:
+    update:
+      title: "Update %{type}"
+      description: "Review the metadata for this %{type} and check everything is correct."
+    locate:
+      title: "Confirm %{type} location"
+      description: "Check the address and map location for this %{type} is correct."
+    review_suggestions:
+      title: "Review suggestions"
+      description: "Approve or reject any scientific topic/operation suggestions for this %{type}."

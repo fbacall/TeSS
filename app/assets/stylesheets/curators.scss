@@ -37,7 +37,13 @@ ul.recent-approvals {
   }
 }
 
+$high-priority-color: #ff4519;
+$low-priority-color: #4eb93b;
 .curation-task {
   &.curation-task-open { }
   &.curation-task-resolved { color: #aaa; }
+  &.priority-high { border-color: $high-priority-color; }
+  span.priority-high { color: $high-priority-color; }
+  &.priority-low { border-color: $low-priority-color; }
+  span.priority-low { color: $low-priority-color; }
 }

@@ -4,7 +4,7 @@ class CurationTask < ApplicationRecord
   belongs_to :completed_by, class_name: 'User', optional: true
 
   validates :status, inclusion: ['open', 'resolved']
-  validates :key, inclusion: ['update', 'locate'] # TODO: Come up with some more tasks
+  validates :key, inclusion: ['update', 'locate', 'review_suggestions'] # TODO: Come up with some more tasks
 
   PRIORITY = {
       low: -10,
@@ -26,7 +26,11 @@ class CurationTask < ApplicationRecord
   end
 
   def title
-    "Task: #{key.titleize} #{resource_type}"
+    "Task: #{I18n.t("curation_tasks.#{key}.title", type: resource_type.humanize.downcase)}"
+  end
+
+  def description
+    I18n.t("curation_tasks.#{key}.description", type: resource_type.humanize.downcase)
   end
 
   def resolve
@@ -35,5 +39,19 @@ class CurationTask < ApplicationRecord
 
   def open?
     status == 'open'
+  end
+
+  def priority=(prio)
+    super(prio.is_a?(Symbol) ? PRIORITY[prio] : prio)
+  end
+
+  def classify_priority
+    if priority <= PRIORITY[:low]
+      :low
+    elsif priority >= PRIORITY[:high]
+      :high
+    else
+      :medium
+    end
   end
 end

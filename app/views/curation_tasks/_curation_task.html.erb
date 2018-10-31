@@ -1,4 +1,6 @@
-<div class="list-card curation-task curation-task-<%= curation_task.status -%>">
+<div class="list-card curation-task curation-task-<%= curation_task.status -%> priority-<%= curation_task.classify_priority-%>">
+  <div class="row">
+  <div class="col-sm-6">
   <% if curation_task.open? %>
     <%= link_to(curation_task, class: 'list-card-heading') do %>
       <i class="fa fa-square-o"></i> <%= curation_task.title %>
@@ -8,8 +10,15 @@
       <i class="fa fa-check-square-o"></i> <%= curation_task.title %>
     </span>
   <% end %>
-  <strong>Status:</strong> <%= curation_task.status.humanize %><br/>
-  <strong>Resource:</strong> <%= link_to curation_task.resource.title, curation_task.resource, target: :_blank %><br/>
-  <strong>Assigned to:</strong> <%= curation_task.assignee ? link_to(curation_task.assignee.name, curation_task.assignee) : 'No one' %><br/>
-  <strong>Completed by:</strong> <%= curation_task.completed_by ? link_to(curation_task.completed_by.name, curation_task.completed_by) : 'No one' %><br/>
+  <p><%= curation_task.description %></p>
+  </div>
+    <div class="col-sm-6">
+      <strong><%= curation_task.resource_type.humanize -%>:</strong> <%= link_to curation_task.resource.title, curation_task.resource, target: :_blank %><br/>
+      <strong>Priority:</strong> <%= content_tag(:span, curation_task.classify_priority.to_s.titleize, class: "priority-#{curation_task.classify_priority}") %><br/>
+      <strong>Assigned to:</strong> <%= curation_task.assignee ? link_to(curation_task.assignee.name, curation_task.assignee) : 'Anyone' %><br/>
+      <% if curation_task.completed_by %>
+        <strong>Completed by:</strong> <%= link_to(curation_task.completed_by.name, curation_task.completed_by) %><br/>
+      <% end %>
+    </div>
+  </div>
 </div>

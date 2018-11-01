@@ -1,1 +1,12 @@
-<%= render partial: 'common/approve_term_suggestions', locals: { suggestion: @curation_task.resource.edit_suggestion } %>
+<% if @curation_task.open? %>
+  <div id="review-suggestions">
+    <%= render partial: 'common/approve_term_suggestions', locals: { suggestion: @curation_task.resource.edit_suggestion } %>
+  </div>
+  <script>
+    // Attempt to reload the page after a suggestion is approved.
+    // This will ensure the task looks resolved after all suggestions are approved/rejected
+    $('#review-suggestions').on('click', '.dropdown-menu .btn', function () {
+        setTimeout(function () { turboLinksRefresh(); }, 2000);
+    });
+  </script>
+<% end %>

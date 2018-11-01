@@ -1,4 +1,6 @@
 class CurationTask < ApplicationRecord
+  include PublicActivity::Common
+
   belongs_to :resource, polymorphic: true
   belongs_to :assignee, class_name: 'User', optional: true
   belongs_to :completed_by, class_name: 'User', optional: true
@@ -33,8 +35,9 @@ class CurationTask < ApplicationRecord
     I18n.t("curation_tasks.#{key}.description", type: resource_type.humanize.downcase)
   end
 
-  def resolve
-    update_attributes(completed_by: User.current_user, status: 'resolved')
+  def resolve(user = User.current_user)
+    update_attributes(completed_by: user, status: 'resolved')
+    create_activity(:resolve, owner: User.current_user, parameters: { logged_in_user_id: User.current_user.try(:id) })
   end
 
   def open?

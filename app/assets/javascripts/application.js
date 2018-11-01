@@ -259,3 +259,7 @@ $(document).on('shown.bs.tab', '[href="#activity_log"]', function () {
         }
     });
 });
+
+function turboLinksRefresh() {
+    Turbolinks.visit(location.toString());
+}

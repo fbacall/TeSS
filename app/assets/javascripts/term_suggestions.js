@@ -42,7 +42,6 @@ var TermSuggestions = {
             field: suggestion_info.data('field')
         })
             .done(function( data ) {
-                console.log("Rejected term");
                 dropdown_div.remove();
                 if (term_suggestions.find('.dropdown').length < 1){
                     term_suggestions.remove();
@@ -62,13 +61,10 @@ var DataSuggestions = {
             .done(function( data ) {
                 /* Remove the suggestion and add the data to the relevant field */
                 dropdown_div.remove();
-                console.log("Removed: " + dropdown_div);
                 if (data_suggestions.find('.dropdown').length < 1){
                     data_suggestions.remove();
-                    console.log("(2)Removed: " + data_suggestions);
                 }
             });
-
     },
     reject: function() {
         var suggestion_info = $(this).parents('.data_suggestion_action');
@@ -78,7 +74,6 @@ var DataSuggestions = {
         var url = "/" + suggestion_info.data('resource_type') + "/" + suggestion_info.data('resource_id') + "/reject_data";
         $.post(url, { 'data_field' : data_field })
             .done(function( data ) {
-                console.log("Rejected data");
                 dropdown_div.remove();
                 if (data_suggestions.find('.dropdown').length < 1){
                     data_suggestions.remove();

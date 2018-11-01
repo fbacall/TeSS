@@ -75,4 +75,22 @@ class CurationTaskTest < ActiveSupport::TestCase
     assert_not_includes queue, resolved
     assert_equal [assigned_high_prio, assigned, unassigned_high_prio, unassigned], queue
   end
+
+  test 'auto-resolves review suggestion tasks when edit suggestion is destroyed' do
+    event = events(:iann_event)
+    topic = EDAM::Ontology.instance.lookup_by_name('Proteins')
+    curator = users(:curator)
+    User.current_user = curator
+    suggestion = event.create_edit_suggestion(scientific_topic_uris: [topic.uri])
+    review_task = event.curation_tasks.create(key: 'review_suggestions')
+
+    assert_difference('event.curation_tasks.open.count', -1) do
+      assert_difference('EditSuggestion.count', -1) do
+        suggestion.accept_suggestion(:scientific_topics, topic)
+      end
+    end
+
+    refute review_task.reload.open?
+    assert_equal curator, review_task.completed_by
+  end
 end

@@ -1,6 +1,7 @@
 class EditSuggestion < ApplicationRecord
   belongs_to :suggestible, polymorphic: true
   after_create :init_data_fields
+  after_destroy :notify_suggestible
 
   has_ontology_terms(:scientific_topics, branch: OBO_EDAM.topics)
   has_ontology_terms(:operations, branch: OBO_EDAM.operations)
@@ -57,5 +58,9 @@ class EditSuggestion < ApplicationRecord
 
   def redundant?
     ontology_term_links.empty? && !data
+  end
+
+  def notify_suggestible
+    suggestible.handle_edit_suggestion_destroy if suggestible.respond_to?(:handle_edit_suggestion_destroy)
   end
 end

@@ -29,4 +29,8 @@ module Curatable
   def was_curated?
     (defined? @related_curation_task) && !!@related_curation_task
   end
+
+  def handle_edit_suggestion_destroy
+    curation_tasks.open.where(key: 'review_suggestions').each(&:resolve)
+  end
 end

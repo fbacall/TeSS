@@ -1,24 +1,24 @@
-<div class="list-card curation-task curation-task-<%= curation_task.status -%> priority-<%= curation_task.classify_priority-%>">
-  <div class="row">
-  <div class="col-sm-6">
+<% active ||= false %>
+<div class="curation-task curation-task-<%= curation_task.status -%> priority-<%= curation_task.classify_priority-%><%= active ? ' curation-task-highlight' : '' %>">
   <% if curation_task.open? %>
-    <%= link_to(curation_task, class: 'list-card-heading') do %>
-      <i class="fa fa-square-o"></i> <%= curation_task.title %>
-    <% end %>
-  <% else %>
-    <span class="list-card-heading">
-      <i class="fa fa-check-square-o"></i> <%= curation_task.title %>
-    </span>
-  <% end %>
-  <p><%= curation_task.description %></p>
-  </div>
-    <div class="col-sm-6">
-      <strong><%= curation_task.resource_type.humanize -%>:</strong> <%= link_to curation_task.resource.title, curation_task.resource, target: :_blank %><br/>
-      <strong>Priority:</strong> <%= content_tag(:span, curation_task.classify_priority.to_s.titleize, class: "priority-#{curation_task.classify_priority}") %><br/>
-      <strong>Assigned to:</strong> <%= curation_task.assignee ? link_to(curation_task.assignee.name, curation_task.assignee) : 'Anyone' %><br/>
-      <% if curation_task.completed_by %>
-        <strong>Completed by:</strong> <%= link_to(curation_task.completed_by.name, curation_task.completed_by) %><br/>
+    <h4>
+      <i class="fa fa-square-o"></i>
+      <%= link_to(curation_task) do %>
+        <%= curation_task.title %>
       <% end %>
-    </div>
-  </div>
+    </h4>
+  <% else %>
+    <h4>
+      <i class="fa fa-check-square-o"></i> <%= curation_task.title %>
+    </h4>
+  <% end %>
+
+  <strong><%= curation_task.resource_type.humanize -%>:</strong> <%= link_to curation_task.resource.title, curation_task.resource, target: :_blank %><br/>
+  <strong>Priority:</strong> <%= content_tag(:span, curation_task.classify_priority.to_s.titleize, class: "priority-#{curation_task.classify_priority}") %><br/>
+  <% if curation_task.completed_by %>
+    <strong>Completed by:</strong> <%= link_to(curation_task.completed_by.name, curation_task.completed_by) %>
+    <%= time_ago_in_words(curation_task.updated_at) %> ago
+  <% else %>
+    <strong>Assigned to:</strong> <%= curation_task.assignee ? link_to(curation_task.assignee.name, curation_task.assignee) : 'Anyone' %>
+  <% end %>
 </div>

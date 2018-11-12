@@ -1,0 +1,5 @@
+<% @curation_tasks.each do |task| %>
+  <%= render partial: 'curation_task', object: task, locals: { active: @curation_task.id == task.id } %>
+<% end %>
+
+<%= render @completed_curation_tasks %>

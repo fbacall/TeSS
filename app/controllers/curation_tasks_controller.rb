@@ -1,16 +1,15 @@
 class CurationTasksController < ApplicationController
   before_action :check_curator
   before_action :set_curation_task, only: :show
+  before_action :set_curation_tasks, only: [:show, :index]
   before_action :set_breadcrumbs
 
   def index
-    # Sorting by `completed_by_id` puts unresolved tasks at the top!
-    @curation_tasks = current_user.curation_task_queue
-    @completed_curation_tasks = current_user.completed_curation_tasks.order('updated_at DESC').limit(5)
+    redirect_to next_curation_tasks_path
   end
 
   def show
-
+    render layout: 'full_width'
   end
 
   def next
@@ -27,6 +26,12 @@ class CurationTasksController < ApplicationController
 
   def set_curation_task
     @curation_task = CurationTask.find_by_id(params[:id])
+  end
+
+  def set_curation_tasks
+    # Sorting by `completed_by_id` puts unresolved tasks at the top!
+    @curation_tasks = current_user.curation_task_queue
+    @completed_curation_tasks = current_user.completed_curation_tasks.order('updated_at DESC').limit(5)
   end
 
   def check_curator

@@ -1,5 +1,14 @@
-<%= render @curation_task %>
+<div class="wrapper">
+  <div id="sidebar" class="popout-sidebar">
+    <%= render partial: 'curation_tasks/task_list' %>
+  </div>
 
-<hr/>
+  <div id="content">
+    <p><%= @curation_task.description %></p>
+    <%= link_to "View #{@curation_task.resource_type.titleize} in a new tab", @curation_task.resource, target: :_blank %>
 
-<%= render partial: "curation_tasks/tasks/#{@curation_task.key}" %>
+    <hr/>
+
+    <%= render partial: "curation_tasks/tasks/#{@curation_task.key}" %>
+  </div>
+</div>

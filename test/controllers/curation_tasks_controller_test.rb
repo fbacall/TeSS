@@ -8,7 +8,7 @@ class CurationTasksControllerTest < ActionController::TestCase
 
     get :index
 
-    assert_response :success
+    assert_redirected_to next_curation_tasks_path
   end
 
   test 'should get topic suggestions if admin' do
@@ -16,7 +16,7 @@ class CurationTasksControllerTest < ActionController::TestCase
 
     get :index
 
-    assert_response :success
+    assert_redirected_to next_curation_tasks_path
   end
 
   test 'should not get index if regular user' do

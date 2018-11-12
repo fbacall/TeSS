@@ -3,7 +3,8 @@ module Facets
       include_expired: ['Event'],
       days_since_scrape: ['Event', 'Material', 'ContentProvider'],
       elixir: ['Event', 'Material', 'ContentProvider'],
-      max_age: ['Event', 'Material']
+      max_age: ['Event', 'Material'],
+      month: ['Event']
   }.with_indifferent_access.freeze
 
   CONVERSIONS = {
@@ -33,6 +34,15 @@ module Facets
       return if age.blank?
       sunspot_scoped(scope) do
         with(:created_at).greater_than(age.ago)
+      end
+    end
+
+    def month(scope, month)
+      return if month.blank? || !month.match?(/\d{4}-\d{2}/)
+      sunspot_scoped(scope) do
+        start = Time.parse("#{month}-01")
+        with(:start).greater_than(start)
+        with(:start).less_than(start.end_of_month)
       end
     end
 

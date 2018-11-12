@@ -48,8 +48,10 @@
             initializeMap();
         }
         addTabToFilters('map');
-      } else {
+      } else if (e.target.id == 'gridtab') {
         addTabToFilters('grid');
+      } else {
+        addTabToFilters('calendar');
       }
     })
   })
@@ -111,7 +113,7 @@
             <a data-toggle="tab" id="maptab" href="#map"><i class="fa fa-globe"></i> Map</a>
           </li>
           <li>
-            <a data-toggle="tab" id="calendartab" href="#calendar"><i class="fa fa-globe"></i> Calendar</a>
+            <a data-toggle="tab" id="calendartab" href="#calendar"><i class="fa fa-calendar"></i> Calendar</a>
           </li>
         </ul>
 

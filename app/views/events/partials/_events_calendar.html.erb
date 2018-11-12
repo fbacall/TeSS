@@ -1,13 +1,21 @@
-<%
-  @grouped = @events.group_by { |e| e.start.strftime('%d %B %Y') }
-%>
-<div id="calendar_basic">
+<% content_for :pagination do %>
+  <%= render 'events/partials/calendar_pager', month: params[:month] || Date.today.strftime('%Y-%m') %>
+<% end %>
 
-  <% @grouped.each do |month, events| %>
-  <h2><%= month %></h2>
-    <% events.each do |event| %>
-      <%= link_to event.title, event %><br/>
-    <% end %>
+<div id="calendar_basic">
+  <%= yield :pagination %>
+
+  <% @events.group_by { |e| e.start.to_date }.each do |date, events| %>
+    <div>
+      <h3><%= date.strftime('%A, %-d %B') %></h3>
+      <ul>
+        <% events.each do |event| %>
+          <li><%= link_to event.title, event %></li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
+
+  <%= yield :pagination %>
 </div>
 

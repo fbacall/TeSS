@@ -23,7 +23,7 @@ class WorkflowsController < ApplicationController
   def show
     @skip_flash_messages_in_header = true # we will handle flash messages in the 'workflows' layout
     respond_to do |format|
-      format.html { render layout: 'workflows' }
+      format.html { render layout: 'full_width' }
       format.json
       format.json_api { render json: @workflow }
     end
@@ -33,13 +33,13 @@ class WorkflowsController < ApplicationController
   def new
     authorize Workflow
     @workflow = Workflow.new
-    render layout: 'workflows'
+    render layout: 'full_width'
   end
 
   # GET /workflows/1/edit
   def edit
     authorize @workflow
-    render layout: 'workflows'
+    render layout: 'full_width'
   end
 
   # POST /workflows

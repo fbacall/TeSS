@@ -9,6 +9,10 @@ class EventsController < ApplicationController
   include FieldLockEnforcement
   include TopicCuration
 
+  def default_url_options
+    {view: 'map'}
+  end
+
   # GET /events
   # GET /events.json
   def index

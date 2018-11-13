@@ -1,8 +1,7 @@
 <% content_for :pagination do %>
   <%= render 'events/partials/calendar_pager', month: params[:month] || Date.today.strftime('%Y-%m') %>
 <% end %>
-
-<div id="calendar_basic">
+<div id="calendar">
   <%= yield :pagination %>
 
   <% @events.group_by { |e| e.start.to_date }.each do |date, events| %>

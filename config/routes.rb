@@ -54,6 +54,9 @@ Rails.application.routes.draw do
   resources :events, concerns: :activities do
     collection do
       get 'count'
+      get 'grid', to: 'events#index', defaults: { view: 'grid' }
+      get 'map', to: 'events#index', defaults: { view: 'map' }
+      get 'calendar', to: 'events#index', defaults: { view: 'calendar' }
     end
     member do
       get 'redirect'

@@ -5,11 +5,7 @@
 
 <body>
 
-<%= render :partial=>"layouts/header" %>
-
-<div id="flash-container" style="margin: 5px 10px 0px 10px;">
-  <%= flash_messages %>
-</div>
+<%= render partial: 'layouts/header' %>
 
 <div id="main-container" class="full-width-container">
   <%= render 'common/breadcrumbs' if @breadcrumbs %>
@@ -18,7 +14,7 @@
   <%= yield :layout %>
 </div>
 
-<%= render :partial=>"layouts/footer" %>
+<%= render partial: 'layouts/footer' %>
 
 </body>
 </html>

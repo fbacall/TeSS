@@ -4,11 +4,29 @@
   </div>
 
   <div id="content">
-    <p><%= @curation_task.description %></p>
-    <%= link_to "View #{@curation_task.resource_type.titleize} in a new tab", @curation_task.resource, target: :_blank %>
+    <div class="row">
+      <div class="col-md-6 col-lg-7 col-xl-8">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Task Instructions</div>
+          <div class="panel-body">
+            <%= @curation_task.description %>
+          </div>
+        </div>
 
-    <hr/>
-
-    <%= render partial: "curation_tasks/tasks/#{@curation_task.key}" %>
+        <%= render partial: "curation_tasks/tasks/#{@curation_task.key}" %>
+      </div>
+      <div class="col-md-6 col-lg-5 col-xl-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <%= @curation_task.resource_type.titleize -%> Info
+            <%= link_to "Open in a new tab", @curation_task.resource, target: :_blank, class: 'pull-right' %>
+          </div>
+          <div class="panel-body">
+            <% type = @curation_task.resource_type.underscore %>
+            <%= render partial: "#{type.pluralize}/info", locals: { type.to_sym => @curation_task.resource } %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

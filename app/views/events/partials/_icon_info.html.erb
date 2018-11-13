@@ -1,18 +1,18 @@
-<% if @event.for_profit? or @event.online? or @event.expired? or @event.started?%>
+<% if event.for_profit? or event.online? or event.expired? or event.started?%>
 <div class="bounding-box pull-right">
-  <% if @event.for_profit? %>
+  <% if event.for_profit? %>
       <%= icon_for(:for_profit) %>
       <span class="gap"></span>
   <% end %>
-  <% if @event.online? %>
+  <% if event.online? %>
       <%= icon_for(:online) %>
       <span class="gap"></span>
   <% end %>
-  <% if @event.expired? %>
+  <% if event.expired? %>
       <%= icon_for(:expired) %>
       <span class="gap"></span>
   <% end %>
-  <% if @event.started? %>
+  <% if event.started? %>
     <%= icon_for(:started) %>
   <% end %>
 </div>

@@ -38,57 +38,7 @@
 
       <div class="tab-content">
         <div id="home" class="tab-pane fade in active">
-          <div class="row">
-            <div class="text-justify">
-              <h2>
-                <%=t '.title', :default => @material.title %>
-                <%= scrape_status_icon(@material, 'large') if current_user and current_user.is_admin? %>
-                <%= missing_icon(@material, 'large') if current_user and current_user.is_admin? %>
-                <%= suggestion_icon(@material, 'large') if current_user and current_user.is_admin? -%>
-              </h2>
-              <p>
-                <div class="url-wrap">
-                  <%= link_to @material.url, @material.url, :class =>'h5', :target => "_blank" %>
-                </div>
-              </p>
-              <% if not @material.long_description.blank? %>
-                  <p><%= render_markdown(@material.long_description) %></p>
-              <% elsif not @material.short_description.blank? %>
-                  <p><%= render_markdown(@material.short_description)%></p>
-              <% end %>
-            </div>
-            <div class="dont-break-out">
-              <%= render partial: 'common/extra_metadata', locals: { resource: @material } %>
-
-              <% if policy(@material).update? && @material.edit_suggestion %>
-                <%= render partial: 'common/approve_term_suggestions', locals: { suggestion: @material.edit_suggestion } %>
-              <% end %>
-
-              <% if @material.events.any? %>
-                  <div>
-                    <b>Related events: </b>
-                    <ul>
-                      <% @material.events.not_finished.each do |event| %>
-                        <li><%= link_to event.title, event %></li>
-                      <% end %>
-                      <% @material.events.finished.each do |event| %>
-                          <li><%= link_to event.title, event %> (ended)</li>
-                      <% end %>
-                    </ul>
-                  </div>
-              <% end %>
-
-              <div>
-                <% if @material.external_resources.any? %>
-                    <b>External resources: </b>
-                    <%= render partial: 'common/external_resources_list', locals: { external_resources: @material.external_resources} %>
-                <% end %>
-              </div>
-
-              <%= render :partial => 'materials/partials/material_schemaorg', :locals => {:material => @material} %>
-              <%= render :partial => 'materials/partials/twitter_card', :locals => {:material => @material} %>
-            </div>
-          </div>
+          <%= render 'info', material: @material %>
         </div>
         <div id="activity_log" class="tab-pane fade" data-activity-path="<%= material_activities_path(@material) -%>">
           <%= image_tag('ajax-loader.gif') %>

@@ -1,20 +1,41 @@
 <% content_for :pagination do %>
-  <%= render 'events/partials/calendar_pager', month: params[:month] || Date.today.strftime('%Y-%m') %>
+  <%= render 'events/partials/calendar_pager', month: params[:month] %>
 <% end %>
 <div id="calendar">
   <%= yield :pagination %>
 
-  <% @events.group_by { |e| e.start.to_date }.each do |date, events| %>
-    <div>
-      <h3><%= date.strftime('%A, %-d %B') %></h3>
-      <ul>
-        <% events.each do |event| %>
-          <li><%= link_to event.title, event %></li>
+  <% grouped_by_date = @events.group_by { |e| e.start.to_date } %>
+  <% if grouped_by_date.keys.any? %>
+    <% past = grouped_by_date.keys.first < Date.today %>
+    <% grouped_by_date.each do |date, events| %>
+      <%# The following is to display a boundary between past dates and future dates %>
+      <% if past && date >= Date.today %>
+        <% draw_boundary = true %>
+        <% past = false %>
+      <% end %>
+      <%= content_tag(:div, class: "calendar-date-block#{draw_boundary ? ' boundary' : ''}") do %>
+        <h3><%= date.strftime('%A, %-d %B') %></h3>
+        <ul>
+          <% events.each do |event| %>
+            <li>
+              <%= link_to event.title, event %>
+              <%= render partial: 'events/partials/event_icons', locals: { event: event } %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+  <% else %>
+    <span class="muted">No events found for this month.</span>
+    <% unless params[:include_expired] %>
+      <div>
+        <span class="muted">Expired events are currently hidden.</span>
+        <%= link_to search_and_facet_params.merge(include_expired: true), class: 'btn btn-default btn-xs' do %>
+          <i class="fa fa-hourglass-end"></i> Show past events
         <% end %>
-      </ul>
-    </div>
+      </div>
+    <% end %>
   <% end %>
 
   <%= yield :pagination %>
 </div>
-

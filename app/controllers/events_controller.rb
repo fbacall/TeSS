@@ -10,6 +10,7 @@ class EventsController < ApplicationController
   include TopicCuration
 
   # The following overrides the definitions in SearchableIndex
+  before_action :set_month, only: [:calendar]
   before_action :set_params, only: [:index, :count, :map, :calendar]
   before_action :fetch_resources, only: [:index, :count, :map, :calendar]
 
@@ -206,5 +207,9 @@ class EventsController < ApplicationController
 
   def disable_pagination
     params[:per_page] = 2 ** 10
+  end
+
+  def set_month
+    params[:month] ||= Date.today.strftime('%Y-%m')
   end
 end

@@ -1,4 +1,4 @@
-<% view = params[:view] || 'grid' %>
+<% view = @view || 'grid' %>
 
 <div class="wrapper">
   <% if TeSS::Config.solr_enabled %>
@@ -8,14 +8,6 @@
   <% end %>
 
   <div id="content">
-    <%= search_and_facet_params.inspect %>
-    <%= controller.default_url_options %>
-    <%= url_for search_and_facet_params %>
-    <%= url_for({ fish: true }) %>
-    <%= url_for search_and_facet_params.to_unsafe_h %>
-    <%= url_for "?" + search_and_facet_params.to_query %>
-    <%= url_for "?fish=true" %>
-    <%= url_for({ anchor: 'ye' }) %>
     <% if TeSS::Config.solr_enabled %>
       <div class="row">
         <% if policy(:event).create? %>
@@ -74,7 +66,7 @@
 
     <div class="tab-content">
       <% if view == 'grid' %>
-        <%= render :partial => "events/partials/events_grid", locals: {events: @events} %>
+        <%= render :partial => "events/partials/events_grid", locals: { events: @events } %>
       <% elsif view == 'map' %>
         <%= render :partial => "events/partials/events_map", locals: { events: @events} %>
       <% elsif view == 'calendar' %>

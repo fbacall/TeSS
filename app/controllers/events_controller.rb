@@ -9,9 +9,9 @@ class EventsController < ApplicationController
   include FieldLockEnforcement
   include TopicCuration
 
-  def default_url_options
-    {view: 'map'}
-  end
+  # The following overrides the definitions in SearchableIndex
+  before_action :set_params, only: [:index, :count, :map, :calendar]
+  before_action :fetch_resources, only: [:index, :count, :map, :calendar]
 
   # GET /events
   # GET /events.json
@@ -22,6 +22,20 @@ class EventsController < ApplicationController
       format.html
       format.csv
       format.ics
+    end
+  end
+
+  def map
+    @view = 'map'
+    respond_to do |format|
+      format.html { render :index }
+    end
+  end
+
+  def calendar
+    @view = 'calendar'
+    respond_to do |format|
+      format.html { render :index }
     end
   end
 

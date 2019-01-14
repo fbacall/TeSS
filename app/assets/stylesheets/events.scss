@@ -63,3 +63,7 @@
     border-top: 2px solid $elixir-blue;
   }
 }
+
+.calendar-month-picker {
+  position: relative; /* So datetimepicker displays in correct location */
+}

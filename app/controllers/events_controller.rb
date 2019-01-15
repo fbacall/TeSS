@@ -2,17 +2,13 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy, :update_packages, :add_term, :reject_term,
                                    :redirect, :report, :update_report, :add_data, :reject_data]
   before_action :set_breadcrumbs
-  before_action :disable_pagination, only: :index, if: lambda { |controller| controller.request.format.ics? or controller.request.format.csv? }
+  before_action :disable_pagination, only: :index, if: -> { request.format.ics? || request.format.csv? }
+  before_action :default_month, only: :index, if: -> { request.format.html? }
 
   include SearchableIndex
   include ActionView::Helpers::TextHelper
   include FieldLockEnforcement
   include TopicCuration
-
-  # The following overrides the definitions in SearchableIndex
-  before_action :set_month, only: [:calendar]
-  before_action :set_params, only: [:index, :count, :map, :calendar]
-  before_action :fetch_resources, only: [:index, :count, :map, :calendar]
 
   # GET /events
   # GET /events.json
@@ -33,8 +29,8 @@ class EventsController < ApplicationController
     end
   end
 
-  def calendar
-    @view = 'calendar'
+  def grid
+    @view = 'grid'
     respond_to do |format|
       format.html { render :index }
     end
@@ -209,7 +205,7 @@ class EventsController < ApplicationController
     params[:per_page] = 2 ** 10
   end
 
-  def set_month
+  def default_month
     params[:month] ||= Date.today.strftime('%Y-%m')
   end
 end

@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       get 'count'
       get 'map'
       get 'calendar'
+      get 'grid'
     end
     member do
       get 'redirect'

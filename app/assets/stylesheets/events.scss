@@ -63,7 +63,7 @@
   }
 
   &.boundary {
-    border-top: 2px solid $elixir-blue;
+    border-top: 2px solid transparentize($elixir-blue, 0.7);
   }
 }
 

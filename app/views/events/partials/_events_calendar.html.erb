@@ -1,10 +1,11 @@
 <% content_for :pagination do %>
   <%= render 'events/partials/calendar_pager', month: params[:month] %>
 <% end %>
+
 <div id="calendar">
   <%= yield :pagination %>
 
-  <% grouped_by_date = @events.group_by { |e| e.start.to_date } %>
+  <% grouped_by_date = @events.select(&:start).group_by { |e| e.start.to_date } %>
   <% if grouped_by_date.keys.any? %>
     <% past = grouped_by_date.keys.first < Date.today %>
     <% grouped_by_date.each do |date, events| %>

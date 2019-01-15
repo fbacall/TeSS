@@ -1,4 +1,4 @@
-<% view = @view || 'grid' %>
+<% view = @view || 'calendar' %>
 
 <div class="wrapper">
   <% if TeSS::Config.solr_enabled %>
@@ -47,9 +47,9 @@
     <% end %>
 
     <ul class="nav nav-tabs">
-      <%= content_tag(:li, class: (view == 'grid' ? 'active' : '')) do %>
-        <%= link_to events_path(search_and_facet_params) do %>
-          <i class="fa fa-table"></i> Grid
+      <%= content_tag(:li, class: (view == 'calendar' ? 'active' : '')) do %>
+        <%= link_to calendar_events_path(search_and_facet_params) do %>
+          <i class="fa fa-calendar"></i> Calendar
         <% end %>
       <% end %>
       <%= content_tag(:li, class: (view == 'map' ? 'active' : '')) do %>
@@ -57,20 +57,20 @@
           <i class="fa fa-globe"></i> Map
         <% end %>
       <% end %>
-      <%= content_tag(:li, class: (view == 'calendar' ? 'active' : '')) do %>
-        <%= link_to calendar_events_path(search_and_facet_params) do %>
-          <i class="fa fa-calendar"></i> Calendar
+      <%= content_tag(:li, class: (view == 'grid' ? 'active' : '')) do %>
+        <%= link_to events_path(search_and_facet_params) do %>
+          <i class="fa fa-table"></i> Grid
         <% end %>
       <% end %>
     </ul>
 
     <div class="tab-content">
-      <% if view == 'grid' %>
-        <%= render :partial => "events/partials/events_grid", locals: { events: @events } %>
+      <% if view == 'calendar' %>
+        <%= render partial: "events/partials/events_calendar", locals: { events: @events} %>
       <% elsif view == 'map' %>
         <%= render :partial => "events/partials/events_map", locals: { events: @events} %>
-      <% elsif view == 'calendar' %>
-        <%= render partial: "events/partials/events_calendar", locals: { events: @events} %>
+      <% elsif view == 'grid' %>
+        <%= render :partial => "events/partials/events_grid", locals: { events: @events } %>
       <% end %>
     </div>
   </div>

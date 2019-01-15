@@ -18,8 +18,21 @@
         <ul>
           <% events.each do |event| %>
             <li>
-              <%= link_to event.title, event %>
-              <%= render partial: 'events/partials/event_icons', locals: { event: event } %>
+              <%= link_to event.title, event %><%= render partial: 'events/partials/event_icons', locals: { event: event } %><br/>
+              <% if event.online? %>
+                <span class="muted">
+                  <i class="fa fa-desktop" aria-hidden="true"></i>
+                  Online
+                </span>
+              <% else %>
+                <% loc = [event.city, event.country].reject { |field_value| field_value.blank? }.join(", ")%>
+                <% unless loc.blank? %>
+                <span class="muted">
+                  <i class="fa fa-map-marker"></i>
+                  <%= loc %>
+                </span>
+                <% end %>
+              <% end %>
             </li>
           <% end %>
         </ul>

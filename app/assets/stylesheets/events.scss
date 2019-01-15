@@ -46,16 +46,19 @@
 
   h3 {
     margin: 5px;
+    font-size: 16px;
   }
 
   ul {
     margin: 0;
-  }
 
-  li {
-    a {
-      font-size: 16px;
-      line-height: 2;
+    li {
+      margin: 5px 0;
+
+      a {
+        font-size: 16px;
+        line-height: 2;
+      }
     }
   }
 

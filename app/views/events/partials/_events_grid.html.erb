@@ -1,0 +1,19 @@
+<div id="home">
+  <% if TeSS::Config.solr_enabled %>
+    <div class="row">
+      <%= render partial: "search/common/sort_by",
+                 locals: { resource: @events,
+                           extras: [['Earliest', 'early'], ['Latest', 'late']] } %>
+    </div>
+  <% end %>
+
+  <%= render partial: "search/common/pagination_bar", locals: { resources: @events } %>
+
+  <ul class="masonry media-grid" style="margin-top: 15px;">
+    <% @events.each do |event| %>
+      <%= render event %>
+    <% end %>
+  </ul>
+
+  <%= render partial: "search/common/pagination_bar", locals: { resources: @events } %>
+</div>

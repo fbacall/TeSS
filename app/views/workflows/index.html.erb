@@ -7,31 +7,29 @@
 
   <div id="content">
     <div class="row">
-      <% if policy(:workflow).create? %>
-        <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-plus-square"></i> Create Workflow <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <%= link_to new_concept_map_path do %>
-                Concept Map
-              <% end %>
-            </li>
-            <li>
-              <%= link_to new_educational_resource_path do %>
-                Educational Resource
-              <% end %>
-            </li>
-            <li role="separator" class="divider"></li>
-            <li>
-              <%= link_to new_workflow_path do %>
-                Legacy Workflow
-              <% end %>
-            </li>
-          </ul>
-        </div>
-      <% end %>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-plus-square"></i> Create Workflow <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <%= link_to new_concept_map_path do %>
+              Concept Map
+            <% end %>
+          </li>
+          <li>
+            <%= link_to new_educational_resource_path do %>
+              Educational Resource
+            <% end %>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li>
+            <%= link_to new_workflow_path do %>
+              Legacy Workflow
+            <% end %>
+          </li>
+        </ul>
+      </div>
       <div class="pull-right">
         <%= info_button('What are workflows in TeSS?') do %>
             <%= render_markdown(WorkflowsHelper::WORKFLOWS_INFO) %>

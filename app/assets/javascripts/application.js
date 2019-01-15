@@ -76,9 +76,7 @@ function reposition_tiles(container, tile_class){
     });
 }
 
-
 document.addEventListener("turbolinks:load", function() {
-
     // Show the tab associated with the window location hash (e.g. "#packages")
     if (window.location.hash) {
         var tab = $('ul.nav a[href="' + window.location.hash + '"]');
@@ -124,13 +122,6 @@ document.addEventListener("turbolinks:load", function() {
             }
         }
     });
-
-    $(document).on('click', '.delete-list-item', function () {
-        $(this).parents('li').remove();
-        return false;
-    });
-
-
 
     // Masonry
     $('.nav-tabs a').on("shown.bs.tab", function(e) {
@@ -229,18 +220,7 @@ document.addEventListener("turbolinks:load", function() {
         })
     });
 
-    $(document).on('shown.bs.tab', '[href="#activity_log"]', function () {
-        var tabPane = $('#activity_log');
-
-        $.ajax({
-            url: tabPane.data('activityPath'),
-            success: function (data) {
-                tabPane.html(data);
-            }
-        });
-    });
-
-// TODO: Try to get scrollspy to work. Something is preventing it from triggering
+    // TODO: Try to get scrollspy to work. Something is preventing it from triggering
     $('.about-block').scrollspy({
         target: '.about-page-menu',
         offset: 40
@@ -257,9 +237,51 @@ document.addEventListener("turbolinks:load", function() {
 
     $("a[rel~=popover], .has-popover").popover();
     $("a[rel~=tooltip], .has-tooltip").tooltip();
+
+    // Calendar month pickers on events calendar page
+    $('[data-calendar-month-picker]').each(function () {
+        var btn = $(this);
+        var picker = $('input', btn);
+        var url = btn.data('calendarMonthFacetUrl');
+
+        picker.datetimepicker({
+            format: 'YYYY-MM'
+        }).on('dp.change', function (e) {
+            Turbolinks.visit('?' + url.replace('xxxxxx', e.date.format('YYYY-MM')));
+        }).on('dp.hide', function () { // This is a hack to fix a bug where the view mode changes after closing
+            setTimeout(function(){
+                picker.data('DateTimePicker').viewMode('months');
+            },1);
+        });
+
+        btn.click(function () {
+            picker.datetimepicker('toggle');
+        })
+    });
+
+
+    $('#calendar-month-picker-btn').click(function () {
+        $('#calendar-month-picker').datetimepicker('show');
+    });
 });
 
 function truncateWithEllipses(text, max)
 {
     return text.substr(0,max-1)+(text.length>max?'&hellip;':'');
 }
+
+$(document).on('click', '.delete-list-item', function () {
+    $(this).parents('li').remove();
+    return false;
+});
+
+$(document).on('shown.bs.tab', '[href="#activity_log"]', function () {
+    var tabPane = $('#activity_log');
+
+    $.ajax({
+        url: tabPane.data('activityPath'),
+        success: function (data) {
+            tabPane.html(data);
+        }
+    });
+});

@@ -46,7 +46,7 @@
 
     <ul class="nav nav-tabs">
       <%= content_tag(:li, class: (view == 'calendar' ? 'active' : '')) do %>
-        <%= link_to calendar_events_path(search_and_facet_params) do %>
+        <%= link_to events_path(search_and_facet_params) do %>
           <i class="fa fa-calendar"></i> Calendar
         <% end %>
       <% end %>
@@ -56,7 +56,7 @@
         <% end %>
       <% end %>
       <%= content_tag(:li, class: (view == 'grid' ? 'active' : '')) do %>
-        <%= link_to events_path(search_and_facet_params) do %>
+        <%= link_to grid_events_path(search_and_facet_params) do %>
           <i class="fa fa-table"></i> Grid
         <% end %>
       <% end %>

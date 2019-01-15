@@ -55,7 +55,6 @@ Rails.application.routes.draw do
     collection do
       get 'count'
       get 'map'
-      get 'calendar'
       get 'grid'
     end
     member do

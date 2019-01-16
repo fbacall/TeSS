@@ -25,11 +25,9 @@
         <button class="btn btn-default" id="sidebar-toggle" type="button" autocomplete="off">
           <i class="fa fa-filter"></i> Filters
         </button>
-        <% include_expired = @facet_params.delete('include_expired') %>
-        <% if include_expired %>
-          <% button_params = search_and_facet_params %>
-          <% button_params.delete(:include_expired) %>
+        <% if @facet_params.key?(:include_expired) %>
           <% button_text = "Hide" %>
+          <% button_params = search_and_facet_params.except(:include_expired) %>
         <% else %>
           <% button_text = "Show" %>
           <% button_params = search_and_facet_params.merge(include_expired: true) %>
@@ -39,7 +37,6 @@
         <% end %>
       </div>
       <div class="row">
-        <%= render partial: "search/common/search_info", locals: { resources: @events_results, resource_type: 'event' } %>
         <%= render partial: "search/common/search_filters", locals: { resources: @events_results } %>
       </div>
     <% end %>
@@ -51,12 +48,12 @@
         <% end %>
       <% end %>
       <%= content_tag(:li, class: (view == 'map' ? 'active' : '')) do %>
-        <%= link_to map_events_path(search_and_facet_params) do %>
+        <%= link_to map_events_path(search_and_facet_params.except(:month)) do %>
           <i class="fa fa-globe"></i> Map
         <% end %>
       <% end %>
       <%= content_tag(:li, class: (view == 'grid' ? 'active' : '')) do %>
-        <%= link_to grid_events_path(search_and_facet_params) do %>
+        <%= link_to grid_events_path(search_and_facet_params.except(:month)) do %>
           <i class="fa fa-table"></i> Grid
         <% end %>
       <% end %>

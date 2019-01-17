@@ -129,33 +129,6 @@ div.wrapper {
       &.open { display: block; }
     }
   }
-
-  // Sidebar facet styles
-  table tr td.h4 {
-    padding-left: 10px;
-  }
-
-  table tr td {
-    padding-left: 20px;
-  }
-
-  table tr td a {
-    color: #000000;
-    padding: 3px;
-    text-decoration: none;
-  }
-
-  table tr td a:hover {
-    background-color: #B0C3C9;
-    color: #ffffff;
-    padding: 3px;
-    text-decoration: none;
-  }
-}
-
-.facet-select {
-  border-radius: 0;
-  border-width: 1px 0;
 }
 
 #sidebar-toggle {

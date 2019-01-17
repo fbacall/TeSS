@@ -11,7 +11,7 @@ Variable that should be available
   <a href="#" class="pull-right" id="sidebar-close">&times;</a>
 </h3>
 
-<ul class="unstyled nav-simple">
+<div class="tess-facets">
   <% if current_user && (current_user.is_curator? || current_user.is_admin?) && resource_type.method_defined?(:last_scraped) %>
     <%= render partial: 'search/common/facet_sidebar_curation' %>
   <% end %>
@@ -21,11 +21,11 @@ Variable that should be available
   <% resources.facets.select { |f| f.rows.any? }.each do |facet| %>
       <% if IGNORED_FILTERS.include?(facet.field_name.to_s)   %>
       <% elsif facet.field_name == :online %>
-          <%= render partial: 'search/common/facet_sidebar_boolean_filter.html.erb',
+          <%= render partial: 'search/common/facet_sidebar_online_filter.html.erb',
                      locals: { facet: facet, resources: resources } %>
       <% else %>
           <%= render partial: 'search/common/facet_sidebar_filter.html.erb',
                      locals: { facet: facet, resources: resources } %>
       <% end %>
   <% end %>
-</ul>
+</div>

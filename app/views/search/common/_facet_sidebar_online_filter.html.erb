@@ -1,0 +1,19 @@
+<%# for things like 'online' or for_profit. Check the box sets it as false.  %>
+<% facet_field = facet.field_name.to_s %>
+<% facet = facet.rows.first %>
+
+<div class="tess-facet">
+  <div class="tess-facet-title"><%= facet_field.humanize %></div>
+
+  <ul>
+    <% if @facet_params.include?(facet_field) %>
+      <%= content_tag(:li) do %>
+        <%= remove_filter_link(facet_field, 'true', { class: 'tess-facet-row active' }, 'Online events') %>
+      <% end %>
+    <% else %>
+      <%= content_tag(:li) do %>
+        <%= filter_link(facet_field, 'true', facet.count, 'Online events', class: 'tess-facet-row') %>
+      <% end %>
+    <% end %>
+  </ul>
+</div>

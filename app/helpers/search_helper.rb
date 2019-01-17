@@ -6,7 +6,7 @@ module SearchHelper
 
   def filter_link name, value, count, title = nil, html_options={}, &block
     parameters = search_and_facet_params
-    title ||= (title || truncate(value.to_s, length: 30))
+    title ||= (title || truncate(value.to_s, length: 80))
 
     #if there's already a filter of the same facet type, create/add to an array
     if parameters.include?(name)
@@ -22,14 +22,14 @@ module SearchHelper
       if block_given?
         yield
       else
-        title + content_tag(:span, "#{count}", class: 'facet-count')
+        content_tag(:span, title, class: 'tess-facet-row-value') + content_tag(:span, "#{count}", class: 'tess-facet-row-count')
       end
     end
   end
 
   def remove_filter_link name, value, html_options={}, title=nil, &block
     parameters = search_and_facet_params
-    title ||= (title || truncate(value.to_s, length: 30))
+    title ||= (title || truncate(value.to_s, length: 80))
 
     #delete a filter from an array or delete the whole facet if it is the only one
     if parameters.include?(name)
@@ -49,7 +49,7 @@ module SearchHelper
       if block_given?
         yield
       else
-      "#{title}&nbsp;<i class='glyphicon glyphicon-remove'></i>".html_safe
+        content_tag(:span, title, class: 'tess-facet-row-value')
       end
     end
   end

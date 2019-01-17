@@ -8,7 +8,7 @@
 
 <% if facet_rows.any? %>
   <div class="tess-facet">
-    <div class="tess-facet-title"><%= (facet_field == 'user') ? 'Owner' : facet_field.humanize.singularize %></div>
+    <div class="tess-facet-title"><%= t("facets.titles.#{facet_field}", default: facet_field.humanize.singularize) %></div>
     <ul>
       <%# Display all filter links %>
       <% facet_rows.each_with_index do |facet, index| %>

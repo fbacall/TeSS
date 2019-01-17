@@ -36,3 +36,11 @@ en:
       profile:
         firstname: 'First name'
         surname: 'Last name'
+  facets:
+    titles:
+      user: 'Owner'
+      online: 'Online / Face-to-face'
+    values:
+      online:
+        'true': Online
+        'false': Face-to-face

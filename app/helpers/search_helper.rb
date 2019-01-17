@@ -6,7 +6,7 @@ module SearchHelper
 
   def filter_link name, value, count, title = nil, html_options={}, &block
     parameters = search_and_facet_params
-    title ||= (title || truncate(value.to_s, length: 80))
+    title ||= (title || t("facets.values.#{name}.#{value}", default: truncate(value.to_s, length: 80)))
 
     #if there's already a filter of the same facet type, create/add to an array
     if parameters.include?(name)
@@ -29,7 +29,7 @@ module SearchHelper
 
   def remove_filter_link name, value, html_options={}, title=nil, &block
     parameters = search_and_facet_params
-    title ||= (title || truncate(value.to_s, length: 80))
+    title ||= (title || t("facets.values.#{name}.#{value}", default: truncate(value.to_s, length: 80)))
 
     #delete a filter from an array or delete the whole facet if it is the only one
     if parameters.include?(name)

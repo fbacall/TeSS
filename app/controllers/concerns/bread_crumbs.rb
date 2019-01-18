@@ -15,7 +15,13 @@ module BreadCrumbs
 
       add_show_breadcrumb resource if (resource && resource.respond_to?(:new_record?) && !resource.new_record?)
 
-      add_breadcrumb action_name.capitalize.humanize, polymorphic_path(resource) unless action_name == 'show'
+      if resource
+        unless action_name == 'show'
+          add_breadcrumb action_name.capitalize.humanize, polymorphic_path(resource) unless action_name == 'show'
+        end
+      else
+        add_breadcrumb action_name.capitalize.humanize
+      end
     elsif action_name != 'index'
       add_breadcrumb action_name.capitalize.humanize, url_for(controller: controller_name, action: action_name, only_path: true)
     end

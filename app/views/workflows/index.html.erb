@@ -32,7 +32,7 @@
 
     <hr>
 
-    <%= render partial: 'common/masonry_grid', locals: { objects: @workflows } %>
+    <%= render partial: 'common/masonry_grid', locals: { objects: @workflows, partial: 'workflows/workflow' } %>
 
     <%= render partial: "search/common/pagination_bar", locals: { resources: @workflows } %>
   </div>

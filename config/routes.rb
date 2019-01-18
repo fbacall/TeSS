@@ -77,6 +77,9 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :concept_maps, concerns: [:collaboratable, :activities], controller: 'workflows', type: 'ConceptMap'
+  resources :educational_resources, concerns: [:collaboratable, :activities], controller: 'workflows', type: 'EducationalResource'
+
   resources :content_providers, concerns: :activities
 
   resources :materials, concerns: :activities do

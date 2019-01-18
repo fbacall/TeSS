@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get 'edam/topics' => 'edam#topics'
   get 'edam/operations' => 'edam#operations'
 
+  resources :workflows
+
   #get 'static/home'
   get 'about' => 'about#tess', as: 'about'
   get 'about/registering' => 'about#registering', as: 'registering_resources'
@@ -53,7 +55,6 @@ Rails.application.routes.draw do
     collection do
       get 'count'
       get 'map'
-      get 'calendar'
       get 'grid'
     end
     member do
@@ -75,9 +76,6 @@ Rails.application.routes.draw do
       get 'embed'
     end
   end
-
-  resources :concept_maps, concerns: [:collaboratable, :activities], controller: 'workflows', type: 'ConceptMap'
-  resources :educational_resources, concerns: [:collaboratable, :activities], controller: 'workflows', type: 'EducationalResource'
 
   resources :content_providers, concerns: :activities
 

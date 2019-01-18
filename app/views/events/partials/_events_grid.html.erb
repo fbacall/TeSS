@@ -1,9 +1,14 @@
 <div id="home">
   <% if TeSS::Config.solr_enabled %>
     <div class="row">
-      <%= render partial: "search/common/sort_by",
-                 locals: { resource: @events,
-                           extras: [['Earliest', 'early'], ['Latest', 'late']] } %>
+      <div class="col-sm-6">
+        <%= render partial: "search/common/search_info", locals: { resources: @events_results, resource_type: 'event' } %>
+      </div>
+      <div class="col-sm-6">
+        <%= render partial: "search/common/sort_by",
+                   locals: { resource: @events,
+                             extras: [['Earliest', 'early'], ['Latest', 'late']] } %>
+      </div>
     </div>
   <% end %>
 

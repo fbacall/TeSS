@@ -13,6 +13,8 @@ module Facets
       max_age: -> (value) { Subscription::FREQUENCY.detect { |f| f[:title] == value }.try(:[], :period) }
   }
 
+  HIDDEN = [:include_expired, :month]
+
   class << self
     def process(facet, value)
       if CONVERSIONS[facet.to_sym]

@@ -3,7 +3,7 @@ class EventsController < ApplicationController
                                    :redirect, :report, :update_report, :add_data, :reject_data]
   before_action :set_breadcrumbs
   before_action :disable_pagination, only: :index, if: -> { request.format.ics? || request.format.csv? }
-  before_action :default_month, only: :index, if: -> { request.format.html? }
+  before_action :default_calendar_sort, only: :index, if: -> { request.format.html? }
 
   include SearchableIndex
   include ActionView::Helpers::TextHelper
@@ -205,7 +205,7 @@ class EventsController < ApplicationController
     params[:per_page] = 2 ** 10
   end
 
-  def default_month
-    params[:month] ||= Date.today.strftime('%Y-%m')
+  def default_calendar_sort
+    params[:sort] = 'early'
   end
 end

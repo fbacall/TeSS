@@ -1197,11 +1197,10 @@ class EventsControllerTest < ActionController::TestCase
     assert_equal 'search', assigns(:search_params)
   end
 
-  test 'includes default month facet when viewing calendar' do
-    get :index
+  test 'overwrites sort by when viewing calendar' do
+    get :index, params: { sort: 'new' }
 
-    assert_equal 1, assigns(:facet_params).keys.length
-    assert_equal Date.today.strftime('%Y-%m'), assigns(:facet_params)['month']
+    assert_equal 'early', assigns(:sort_by)
   end
 
   test 'map view of index' do

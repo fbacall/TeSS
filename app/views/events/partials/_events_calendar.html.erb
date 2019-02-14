@@ -1,5 +1,8 @@
+<% current_year = Date.today.year %>
+
 <% content_for :pagination do %>
-  <%= render 'events/partials/calendar_pager', month: params[:month] %>
+  <%= render partial: "search/common/pagination_bar", locals: { resources: @events } %>
+  <%# render 'events/partials/calendar_pager', month: params[:month] %>
 <% end %>
 
 <div id="calendar">
@@ -15,7 +18,7 @@
         <% past = false %>
       <% end %>
       <%= content_tag(:div, class: "calendar-date-block#{draw_boundary ? ' boundary' : ''}") do %>
-        <h3><%= date.strftime('%A, %-d %B') %></h3>
+        <h3><%= date.strftime("%A, %-d %B#{' %Y' if date.year != current_year}") %></h3>
         <ul>
           <% events.each do |event| %>
             <li>
